@@ -1,0 +1,2744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NSCSTI 2.0 Knowledge Repository</title>
+
+  <!-- Google Fonts: Source Sans 3 for all text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       CSS VARIABLES — Edit these to change the whole color scheme
+    ============================================================ */
+    :root {
+      --blue-deep:    #1A3A5C;   /* Primary brand blue */
+      --blue-mid:     #2B5E96;   /* Medium blue for accents */
+      --blue-light:   #E8F0FA;   /* Very light blue background */
+      --saffron:      #E07B39;   /* Saffron orange accent */
+      --green:        #2E7D52;   /* Green accent for downloads */
+      --white:        #FFFFFF;
+      --off-white:    #F6F8FC;
+      --text-dark:    #1C2B3A;
+      --text-mid:     #4A5D6E;
+      --text-light:   #7A8D9E;
+      --border:       #D0DDE9;
+      --sidebar-w:    280px;     /* Width of the left sidebar on repository page */
+      --header-h:     70px;      /* Height of the top navigation bar */
+    }
+
+    /* ============================================================
+       GLOBAL RESET & BASE STYLES
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Source Sans 3', sans-serif;
+      color: var(--text-dark);
+      background: var(--off-white);
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    a { color: var(--blue-mid); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ============================================================
+       TOP NAVIGATION BAR (shared across all pages)
+    ============================================================ */
+    .nav {
+      position: fixed;         /* Stays at the top while scrolling */
+      top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background: var(--blue-deep);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 1000;           /* Sits above all other content */
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    }
+
+    /* The NSCSTI logo/wordmark in the nav */
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .nav-brand-text {
+      color: white;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-brand-text span {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      opacity: 0.75;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Navigation links in the top bar */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.85);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: background 0.2s, color 0.2s;
+      letter-spacing: 0.2px;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      text-decoration: none;
+    }
+
+    /* ============================================================
+       PAGE SYSTEM — Only one "page" is visible at a time
+       JavaScript toggles the "active" class on .page elements
+    ============================================================ */
+    .page { display: none; padding-top: var(--header-h); }
+    .page.active { display: block; }
+
+    /* ============================================================
+       PAGE 1: HOMEPAGE
+    ============================================================ */
+
+    /* Hero section — full-width banner with gradient */
+    .hero {
+      background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-mid) 60%, #3A7DBD 100%);
+      padding: 90px 60px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative geometric shapes in the background */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: 30%;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: rgba(224, 123, 57, 0.1); /* Saffron tint */
+    }
+
+    /* Saffron top-bar stripe on hero */
+    .hero-stripe {
+      height: 4px;
+      background: linear-gradient(90deg, var(--saffron), #F5A547, var(--green));
+      position: absolute;
+      top: 0; left: 0; right: 0;
+    }
+
+    .hero-inner {
+      max-width: 900px;
+      position: relative; z-index: 1; /* Above the decorative circles */
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(224,123,57,0.2);
+      border: 1px solid rgba(224,123,57,0.4);
+      color: #F5C07A;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 4vw, 48px); /* Responsive font size */
+      color: white;
+      margin-bottom: 20px;
+      line-height: 1.15;
+    }
+
+    .hero-sub {
+      font-size: 20px;
+      color: rgba(255,255,255,0.80);
+      max-width: 680px;
+      font-weight: 300;
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+
+    /* Primary CTA button */
+    .btn-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--saffron);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(224,123,57,0.4);
+    }
+
+    .btn-cta:hover {
+      background: #C96A2A;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(224,123,57,0.5);
+      text-decoration: none;
+    }
+
+    /* Stats bar below the hero */
+    .hero-stats {
+      margin-top: 50px;
+      display: flex;
+      gap: 40px;
+    }
+
+    .stat-item {
+      text-align: left;
+    }
+
+    .stat-num {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--saffron);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    /* ---- Eight Pillars Grid Section ---- */
+    .pillars-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 70px 40px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 36px;
+      color: var(--blue-deep);
+      margin-bottom: 10px;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--text-mid);
+      font-size: 18px;
+      margin-bottom: 50px;
+    }
+
+    /* 4-column grid for the 8 pillar cards */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    /* Individual pillar card */
+    .pillar-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 28px 22px; cursor: pointer; transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s, background 0.22s; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+    .pillar-card:hover { background: #FFF5EE; transform: translateY(-5px); box-shadow: 0 12px 32px rgba(224,123,57,0.15); border-color: var(--saffron); }
+    .pillar-card h3 { font-family: 'Source Sans 3', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-dark); margin-bottom: 0; line-height: 1.4; flex: 1; }
+    .pillar-card-meta { margin-top: 16px; display: flex; align-items: center; gap: 12px; }
+    .browse-link { font-size: 16px; font-weight: 700; color: var(--blue-mid); display: flex; align-items: center; gap: 5px; margin-top: 10px; opacity: 0; transform: translateY(4px); transition: opacity 0.2s, transform 0.2s; }
+    .pillar-card:hover .browse-link { opacity: 1; transform: translateY(0); }
+
+    /* ---- About Section on Homepage ---- */
+    .about-section {
+      background: var(--blue-deep);
+      padding: 60px 40px;
+      text-align: center;
+    }
+
+    .about-section h2 {
+      color: white;
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    .about-section p {
+      color: rgba(255,255,255,0.75);
+      max-width: 700px;
+      margin: 0 auto 30px;
+      font-size: 16px;
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: 2px solid rgba(255,255,255,0.5);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: white;
+      text-decoration: none;
+    }
+
+    /* ============================================================
+       PAGE 2: REPOSITORY PAGE
+       Layout: Fixed left sidebar + scrollable main content
+    ============================================================ */
+    .repo-layout {
+      display: flex;
+      min-height: calc(100vh - var(--header-h));
+    }
+
+    /* LEFT SIDEBAR */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: white;
+      border-right: 1px solid var(--border);
+      position: sticky;               /* Stays in place when main content scrolls */
+      top: var(--header-h);           /* Starts below the nav bar */
+      height: calc(100vh - var(--header-h));
+      overflow-y: auto;
+      padding: 24px 0;
+    }
+
+    .sidebar-title {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-light);
+      padding: 0 20px 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+
+    /* Each pillar link in the sidebar */
+    .sidebar-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background 0.15s;
+      border-left: 3px solid transparent;    /* Will turn blue when active */
+    }
+
+    .sidebar-item:hover { background: var(--blue-light); }
+
+    .sidebar-item.active {
+      background: var(--blue-light);
+      border-left-color: var(--blue-mid);    /* Blue left border shows active pillar */
+    }
+
+    .sidebar-item.active .sidebar-num { background: var(--blue-mid); color: white; }
+
+    .sidebar-num {
+      min-width: 22px; height: 22px;
+      background: var(--border);
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-mid);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .sidebar-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.4;
+    }
+
+    /* MAIN CONTENT AREA (right side of repository) */
+    .repo-main {
+      flex: 1;
+      padding: 40px;
+      max-width: calc(100% - var(--sidebar-w));
+      overflow-x: hidden;
+    }
+
+    /* Pillar content block — only one is visible at a time */
+    .pillar-content { display: none; }
+    .pillar-content.active { display: block; }
+
+    /* Large pillar heading */
+    .pillar-header {
+      margin-bottom: 30px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .pillar-badge { display: inline-block; background: var(--blue-light); color: var(--blue-mid); font-size: 15px; font-weight: 700; letter-spacing: 0.5px; padding: 6px 14px; border-radius: 20px; }
+
+    .pillar-header h2 {
+      font-size: 32px;
+      color: var(--blue-deep);
+      margin-bottom: 10px;
+    }
+
+    .pillar-header p {
+      color: var(--text-mid);
+      font-size: 17px;
+    }
+
+    /* ---- MATURITY LEVELS STEPPER ----
+       The horizontal progress bar showing Stages 1–5
+    ============================================================ */
+    .maturity-strip {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .maturity-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 12px;
+    }
+
+    /* The five-step progress track */
+    .stepper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* Each stage button */
+    .stage-btn {
+      flex: 1;
+      text-align: center;
+      padding: 10px 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-mid);
+      background: var(--off-white);
+      border: 1px solid var(--border);
+      border-right: none;        /* Borders collapse between steps */
+      transition: background 0.2s, color 0.2s;
+      position: relative;
+    }
+
+    .stage-btn:first-child { border-radius: 8px 0 0 8px; }
+    .stage-btn:last-child  { border-radius: 0 8px 8px 0; border-right: 1px solid var(--border); }
+
+    .stage-btn:hover, .stage-btn.active {
+      background: var(--blue-mid);
+      color: white;
+      border-color: var(--blue-mid);
+      z-index: 1;
+    }
+
+    .stage-desc {
+      margin-top: 12px;
+      padding: 12px 16px;
+      background: var(--blue-light);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-dark);
+      display: none;             /* Hidden until a stage is clicked */
+      border-left: 3px solid var(--blue-mid);
+    }
+
+    .stage-desc.active { display: block; }
+
+    /* ---- METRIC ACCORDIONS ----
+       Each metric folds/unfolds to show its documents
+    ============================================================ */
+    .metric-accordion {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    /* Clickable header of each accordion */
+    .metric-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      cursor: pointer;
+      user-select: none;         /* Prevent text selection on click */
+      transition: background 0.15s;
+    }
+
+    .metric-head:hover { background: var(--blue-light); }
+
+    .metric-head-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      flex: 1;
+    }
+
+    /* Small numbered badge for each metric */
+    .metric-num-badge {
+      min-width: 32px; height: 32px;
+      background: var(--blue-light);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--blue-mid);
+      flex-shrink: 0;
+    }
+
+    .metric-head h4 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    /* The chevron icon that rotates when open */
+    .metric-chevron {
+      font-size: 18px;
+      color: var(--text-light);
+      transition: transform 0.25s;
+      flex-shrink: 0;
+      margin-left: 12px;
+    }
+
+    .metric-accordion.open .metric-chevron { transform: rotate(180deg); }
+
+    /* The collapsible body of the accordion */
+    .metric-body {
+      display: none;
+      padding: 0 22px 22px;
+      border-top: 1px solid var(--border);
+    }
+
+    .metric-accordion.open .metric-body { display: block; }
+
+    /* Section heading inside the accordion body */
+    .docs-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin: 16px 0 12px;
+    }
+
+    /* ---- DOCUMENT ITEMS (the "Resource Library") ---- */
+    .doc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Each document entry row */
+    .doc-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 14px 16px;
+      background: var(--off-white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .doc-item:hover {
+      border-color: var(--blue-mid);
+      box-shadow: 0 2px 8px rgba(43,94,150,0.1);
+    }
+
+    /* File type icon circle */
+    .doc-text { font-size: 16px; color: var(--text-dark); line-height: 1.5; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      background: var(--blue-deep);
+      color: rgba(255,255,255,0.80);
+      padding: 40px 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 40px;
+    }
+
+    footer h4 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 12px;
+    }
+
+    footer p {
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    footer a {
+      color: rgba(255,255,255,0.75);
+      font-size: 14px;
+      display: block;
+      margin-bottom: 6px;
+      transition: color 0.15s;
+    }
+
+    footer a:hover { color: var(--saffron); text-decoration: none; }
+
+    .footer-bottom {
+      background: rgba(0,0,0,0.25);
+      text-align: center;
+      padding: 14px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+    }
+    
+
+    /* ============================================================
+       NOTIFICATION TOAST (appears when Download is clicked)
+    ============================================================ */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--blue-deep);
+      color: white;
+      padding: 14px 22px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s;
+      border-left: 4px solid var(--saffron);
+      max-width: 340px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================================
+       RESPONSIVE: make it work on smaller screens too
+    ============================================================ */
+    @media (max-width: 900px) {
+      .pillars-grid { grid-template-columns: repeat(2, 1fr); }
+      footer { grid-template-columns: 1fr; gap: 24px; }
+      .hero { padding: 70px 30px 60px; }
+      .nav { padding: 0 20px; }
+    }
+
+    @media (max-width: 600px) {
+      .pillars-grid { grid-template-columns: 1fr; }
+      .repo-main { padding: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================
+       TOP NAVIGATION BAR
+       Appears on every page. nav-links switch between pages.
+  ============================================================ -->
+  <nav class="nav">
+    <div class="nav-brand" onclick="showPage('home')">
+      <div class="nav-brand-text">
+        NSCSTI 2.0
+        <span>Knowledge Repository</span>
+      </div>
+    </div>
+
+    <ul class="nav-links">
+      <!-- Each link calls showPage() with the page ID -->
+      <li><a href="#" onclick="showPage('home'); return false;" id="link-home" class="active">Home</a></li>
+      <li><a href="#" onclick="showPage('repo'); return false;" id="link-repo">Standards Repository</a></li>
+    </ul>
+  </nav>
+
+  <!-- ============================================================
+       TOAST NOTIFICATION
+       Shows a small message when the user clicks a download button
+  ============================================================ -->
+  <div class="toast" id="toast">📥 Template request noted — resource coming soon!</div>
+
+
+  <!-- ╔══════════════════════════════════════════════════════════╗
+       ║  PAGE 1: HOMEPAGE                                        ║
+       ╚══════════════════════════════════════════════════════════╝ -->
+  <div class="page active" id="page-home">
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="hero-stripe"></div>
+      <div class="hero-inner">
+        <div class="hero-tag">Government of India Initiative</div>
+        <h1>National Standards for Civil<br>Service Training Institutions</h1>
+        <p class="hero-sub">
+          A shared knowledge repository introducing standards for best practices in the civil service capacity building ecosystem. This repository serves all Civil Service Training Institutions across India, providing standardised evidence templates, SOPs, and best-practice documents to support institutional maturity assessments under NSCSTI 2.0.
+        </p>
+        <!-- CTA button opens the official NSCSTI website -->
+        <a href="https://nscsti.org" target="_blank" class="btn-cta">
+          Visit the Official NSCSTI Website
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- EIGHT PILLARS GRID -->
+    <section class="pillars-section">
+      <h2 class="section-title">Eight Pillars of Excellence</h2>
+      <p class="section-sub">Click on any pillar to explore its metrics and resource templates</p>
+
+      <div class="pillars-grid" id="pillars-grid">
+        <!-- Cards are generated by JavaScript below -->
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="https://nscsti.org/assets/pdf_doc/Approach%20paper.pdf" target="_blank">Approach Paper ↗</a>
+        <a href="https://nscsti.org/assets/pdf_doc/NSCSTI%202.0%20Guidebook%20PPT.pptx" target="_blank">NSCSTI 2.0 Guidebook ↗</a>
+        <a href="https://nscsti.org/assets/pdf_doc/Operational%20PPT.pptx" target="_blank">Operational Slides ↗</a>
+        <a href="https://nscsti.org/assets/pdf_doc/Operational%20Manual.pdf" target="_blank">Operational Manual ↗</a>
+        <a href="https://nscsti.org/assets/pdf_doc/NSCSTI%202.0%20Flyer.pdf" target="_blank">NSCSTI 2.0 Flyer ↗</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <p><a href="mailto:cbc-dopt@gov.in">cbc-dopt@gov.in</a></p>
+      </div>
+      <div>
+        <h4>Address</h4>
+        <p>Capacity Building Commission<br>
+        22nd Floor, Jawahar Vyapar Bhawan, Tolstoy Road<br>
+        HC Mathur Lane, New Delhi<br>
+        Delhi – 110001</p>
+      </div>
+    </footer>
+    <div class="footer-bottom">&copy; 2026 CEGIS</div>
+
+  </div><!-- /page-home -->
+
+
+  <!-- ╔══════════════════════════════════════════════════════════╗
+       ║  PAGE 2: STANDARDS REPOSITORY                            ║
+       ╚══════════════════════════════════════════════════════════╝ -->
+  <div class="page" id="page-repo">
+
+    <div class="repo-layout">
+
+      <!-- LEFT SIDEBAR: list of all 8 pillars -->
+      <aside class="sidebar">
+        <div class="sidebar-title">NSCSTI 2.0 Pillars</div>
+        <div id="sidebar-items">
+          <!-- Generated by JavaScript -->
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT: pillar details, metrics, docs -->
+      <main class="repo-main">
+        <div id="pillar-contents">
+          <!-- Generated by JavaScript -->
+        </div>
+      </main>
+
+    </div>
+
+    <!-- FOOTER repeated on repository page -->
+    <footer>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="https://nscsti.org/assets/pdf_doc/Approach%20paper.pdf" target="_blank">Approach Paper ↗</a>
+        <a href="https://nscsti.org/assets/pdf_doc/NSCSTI%202.0%20Guidebook%20PPT.pptx" target="_blank">NSCSTI 2.0 Guidebook ↗</a>
+        <a href="https://nscsti.org/assets/pdf_doc/Operational%20PPT.pptx" target="_blank">Operational Slides ↗</a>
+        <a href="https://nscsti.org/assets/pdf_doc/Operational%20Manual.pdf" target="_blank">Operational Manual ↗</a>
+        <a href="https://nscsti.org/assets/pdf_doc/NSCSTI%202.0%20Flyer.pdf" target="_blank">NSCSTI 2.0 Flyer ↗</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <p><a href="mailto:cbc-dopt@gov.in">cbc-dopt@gov.in</a></p>
+      </div>
+      <div>
+        <h4>Address</h4>
+        <p>Capacity Building Commission<br>
+        22nd Floor, Jawahar Vyapar Bhawan, Tolstoy Road<br>
+        HC Mathur Lane, New Delhi<br>
+        Delhi – 110001</p>
+      </div>
+    </footer>
+    <div class="footer-bottom">&copy; 2026 CEGIS</div>
+
+  </div><!-- /page-repo -->
+
+
+
+  <!-- ============================================================
+       JAVASCRIPT
+       All the interactive logic lives here.
+       Comments explain each section for beginners.
+  ============================================================ -->
+  <script>
+
+    // ============================================================
+    // THE DATA
+    // All 8 pillars, their metrics, and supporting documents
+    // This was extracted from your Excel file and embedded here
+    // so the website works completely OFFLINE (no server needed).
+    // ============================================================
+    const REPOSITORY_DATA = {
+      "Pillar 1: Training Needs Assessment & Course Design": {
+            "1": {
+                  "metric": "Does the institute/Training directorate (as applicable) have in-house capacity to identify Training Needs?",
+                  "docs": [
+                        {
+                              "text": "List of permanent faculty along with TNA certification",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Procedures/SOP followed for identifying training needs",
+                              "stages": "S3, S4, S5",
+                              "template_name": "SOP for Training Needs Assessments",
+                              "template_url": "https://docs.google.com/document/d/1Gjo8D0nqdc7rM6Y0cFKdx5wkA4wI3kqE/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Sample copies of Minutes of Meetings/ Board proceedings with officers from the parent Ministry/ Department/Organisation and other stakeholders for identifying training needs",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Analysis Report of TNA based on the stakeholders inputs",
+                              "stages": "S4, S5",
+                              "template_name": "NSSTA TNA Form",
+                              "template_url": "https://docs.google.com/forms/d/e/1FAIpQLSd8GhCVpdJ4M0dEP2mErNRAHwI6Kk8gxBWZorBEs7l4BmetDw/viewform",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": "y"
+                        },
+                        {
+                              "text": "Report on re-designing and updation of training courses based on the identified training needs",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "2": {
+                  "metric": "To what extent are the training needs identified through active collaboration with leading national/international institutes?",
+                  "docs": [
+                        {
+                              "text": "Signed copy of MoU with leading national/international institutes where scope/area of collaboration includes TNA",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Minutes of meetings/communication with leading national/international institutes for designing TNA",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Noting/ circular/ office order with leading national/international institutes related to the implementation of TNA",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Old and new training course showcasing the re-designing of training courses with leading national/international institutes",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "3": {
+                  "metric": "Are training courses offered by the institute mapped as per Karmayogi Competency Model (KCM) for functional and behavioural competencies and domain competencies?",
+                  "docs": [
+                        {
+                              "text": "Mapping of trainees role along with their competencies (Behavioural, Functional, Domain based)/ charter of duties",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of total courses offered by the Institute along with the courses mapped with competencies to justify the percentage selection.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for mapping courses to specific competencies",
+                              "template_url": "https://docs.google.com/document/d/1aALr_1eyYuFK_IdT6uc40HkABuIo8W1v/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "4": {
+                  "metric": "Does the institute/Training directorate have standard operating procedures for designing core courses in the last 2 years?    Example: Tenure-based training programmes like probationary courses, mid-career training programmes, etc.",
+                  "docs": [
+                        {
+                              "text": "List of core (tenure-based training programmes like probationary courses, mid-career training programmes) courses",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "SOP for designing core courses in last 2 years",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for Course Design",
+                              "template_url": "https://docs.google.com/document/d/1ayuPEgYHDKREUTbSJ_GA7I3-EUlt60mK/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of core courses for which the SOP is followed justifying the percentage selection.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for Developing new courses based on the training needs Assessment",
+                              "template_url": "https://docs.google.com/document/d/13Jk6S8ODEsTEoSlQsGi8GO4cAXWOcZrf/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "5": {
+                  "metric": "Does the institute/Training Directorate have standard operating procedures for designing in- service trainings, demand-based trainings, etc., in the last 2 years?",
+                  "docs": [
+                        {
+                              "text": "List of in-service, demand based courses",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "SOP for designing in-service, demand based courses in last 2 years",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for Developing new courses based on the training needs Assessment",
+                              "template_url": "https://docs.google.com/document/d/13Jk6S8ODEsTEoSlQsGi8GO4cAXWOcZrf/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of in-service, demand based courses for which the SOP is followed justifying the percentage selection.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for Developing new courses based on the training needs Assessment",
+                              "template_url": "https://docs.google.com/document/d/13Jk6S8ODEsTEoSlQsGi8GO4cAXWOcZrf/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        }
+                  ]
+            }
+      },
+      "Pillar 2: Faculty Development": {
+            "6": {
+                  "metric": "How are full-time faculty members selected and appointed to the institute?",
+                  "docs": [
+                        {
+                              "text": "Procedures/ Manuals followed for faculty selection & Appointment",
+                              "stages": "S3, S4, S5",
+                              "template_name": "SOP FOR FACULTY SELECTION SOP for Selection of Faculty (Internal & Guest)",
+                              "template_url": "https://docs.google.com/document/d/1fLzPNYZEAbuKWBWzc2Xj8jWIfiKkAGdc/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Composition of internal and external committee (parent Ministry/Department/Organisation/Cadre Controlling Authority) for screening of full time faculty",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Minutes of screening committee/Board proceddings for screening of faculty selected.",
+                              "stages": "S4, S5",
+                              "template_name": "SOP for Intra-institute discussion of Faculty Members",
+                              "template_url": "https://docs.google.com/document/d/1t09kd6O4EXkiEuUJPquob9mYUqBe2PNP/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Annual evaluation report for all the full time faculty members",
+                              "stages": "S5",
+                              "template_name": "SOP for faculty evaluation",
+                              "template_url": "https://docs.google.com/document/d/1oNB67scb3jjsj8EvT0QbuX8yPp2mVoEB/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "7": {
+                  "metric": "What are the criteria or parameters considered for selecting guest faculty in the institute?",
+                  "docs": [
+                        {
+                              "text": "List of guest faculty members selected bifurcated into Ministry/Department/Academic Experts/ Experts from public and private sector.",
+                              "stages": "S5",
+                              "template_name": "SOP for Selection of Faculty (Internal & Guest)",
+                              "template_url": "https://docs.google.com/document/d/1ASQd_-y3emzuXswIzvEgYioBQ6FmezpY/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Invitation letters sent to guest faculties for delivering lectures.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for Selection of Faculty (Internal & Guest)",
+                              "template_url": "https://docs.google.com/document/d/1ASQd_-y3emzuXswIzvEgYioBQ6FmezpY/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "CVs of guest faculties highlighting the details on domain expertise, practitioner experience and previous training experience",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "8": {
+                  "metric": "Do full-time faculty and visiting faculty (if applicable) members undergo a structured, pre- designed onboarding process?",
+                  "docs": [
+                        {
+                              "text": "SOP followed for onboarding of faculty",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for Onboarding of faculty members at the Institute",
+                              "template_url": "https://docs.google.com/document/d/1OnOWN7xU8p5QdAiw5aIALVvlEn0pmZhD/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of all full-time and visiting faculty.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of full-time and visiting faculty attended the orientation session in the last 2 years to justify the percentage.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Details of the orientation (Agenda/ Attendance records/ photographs etc.)",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for Onboarding of faculty members at the Institute",
+                              "template_url": "https://docs.google.com/document/d/1jiGLTozG1Botu3J_WoCUIm6Dg0YS6K1K/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "9": {
+                  "metric": "To what extent have the institute's faculty participated in the Faculty Development Programs in the past 2 years?",
+                  "docs": [
+                        {
+                              "text": "List of full time faculty members",
+                              "stages": "S1, S2, S3, S4, S5",
+                              "template_name": "SOP for Onboarding of faculty members at the Institute",
+                              "template_url": "https://docs.google.com/document/d/1jiGLTozG1Botu3J_WoCUIm6Dg0YS6K1K/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Proof of completion of FDP on iGOT by full time faculty",
+                              "stages": "S1, S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of full time faculty taking part in FDP programmes in the last 2 years to justify the percentage selection",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Copy of FDP certificates",
+                              "stages": "S5, S4, S3, S2",
+                              "template_name": "SOP for faculty evaluation",
+                              "template_url": "https://docs.google.com/document/d/1OvfpRSjqGImuowpEuiUAoJcarMV236oZ/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "10": {
+                  "metric": "What percentage of full-time faculty have been professionally certified on Instructional/Learning Design Methodologies within the last five years?",
+                  "docs": [
+                        {
+                              "text": "List of full- time faculty at the institute",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for Onboarding of faculty members at the Institute",
+                              "template_url": "https://docs.google.com/document/d/1jiGLTozG1Botu3J_WoCUIm6Dg0YS6K1K/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of faculty members undertaken professional certification (DTS/DoT) justifying the percentage selection",
+                              "stages": "S5, S4, S3, S2",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Copy of certificates for all the faculty members undertaken professional certifications in the last 5 years",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            }
+      },
+      "Pillar 3: Resource and Training Targets": {
+            "11": {
+                  "metric": "Does the institute conduct annual faculty resource planning for training courses?",
+                  "docs": [
+                        {
+                              "text": "SOP (Procedures/ Manuals/Processes followed)/ office order/ sanctioned strength for manpower planning",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for resource planning",
+                              "template_url": "https://docs.google.com/document/d/1rUivzW-9oToASNrZaqCbyXUFL14dZPb-/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of core and non- core courses",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Mapping of faculty (full time and guest faculty) for all the courses (core and non-core)",
+                              "stages": "S5",
+                              "template_name": "SOP for guest faculty responsible for developing e- learning courses to undergo instructional design training",
+                              "template_url": "https://docs.google.com/document/d/1RFP6D1AfAojlLIKngC7bWqgPwNuIO31M/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Faculty feedback on the courses planned in an year",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Corrective measures undertaken",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "12": {
+                  "metric": "Does the institute have adequate learning infrastructure (Physical & Virtual resources) to support teaching & learning?",
+                  "docs": [
+                        {
+                              "text": "List of facilities available",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for resource planning",
+                              "template_url": "https://docs.google.com/document/d/1rUivzW-9oToASNrZaqCbyXUFL14dZPb-/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Photographic evidence/student handbook for the available physical infrastructure",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Record of e-library, LMS and other virtual learning platforms.",
+                              "stages": "S4, S5",
+                              "template_name": "SOP for resource planning",
+                              "template_url": "https://docs.google.com/document/d/1rUivzW-9oToASNrZaqCbyXUFL14dZPb-/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Photographic evidence/ any other document for Augmented/Virtual Reality Platforms",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Record of National and International digital libraries (records of access to latest books, research papers, journals, etc)",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "13": {
+                  "metric": "How does the institute monitor and evaluate the performance of its employees (teaching and non-teaching staff)?",
+                  "docs": [
+                        {
+                              "text": "List of faculty",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "KPIs defining the objective and quantitative metrics for evaluating staff based on their roles and responsibilities",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of faculty for which KPIs are defined justifying the percentage selection",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "14": {
+                  "metric": "To what extent does the institute undertake green initiatives inside and outside the campus?",
+                  "docs": [
+                        {
+                              "text": "Photographic evidence",
+                              "stages": "S2, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Document of installation/procurement records, etc.",
+                              "stages": "S3, S4, S5",
+                              "template_name": "SOP for resource planning",
+                              "template_url": "https://docs.google.com/document/d/1rUivzW-9oToASNrZaqCbyXUFL14dZPb-/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Proof of engagement with NGOs/community to implement green initiatives (certificates/minutes of meeting/agenda, etc.)",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Copy of certificate justifying GRIHA/ISO:14001/ISO 50001/BEE Star Rating/IGBC Certification",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "15": {
+                  "metric": "To what extent does your institution integrate the Indian Knowledge Systems (IKS) into the training modules and pedagogy to align with the governance, administration, and ethics frameworks?",
+                  "docs": [
+                        {
+                              "text": "Core course outline showing a mandatory module on IKS (with module title, description, objectives)",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Course module with IKS components in non-core courses.",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "MOUs/ agreement signed with IKS experts, CSTIs and scholars",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Filled feedback from stakeholders (trainees, faculty and experts) on IKS content",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of faculty members associated with IKS cell",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Conference reports/program brochures showing institutional representation in regional/national/ international forums on IKS.",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Analysis and Corrective action taken report based on the feedback collected",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "16": {
+                  "metric": "To what extent does your institution incorporate Indian Knowledge System (IKS) elements into its culture and daily practices, beyond formal training programs?  For reference: Traditional Attire & Cuisine/yoga meditation, use of regional language in course content, experiential learning, etc.",
+                  "docs": [
+                        {
+                              "text": "SOP/Policy/other guidelines on IKS",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Minutes of meetings/ circular/ office order supporting regular IKS integration",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Course schedule on integrating structured field visits, multilingual learning materials etc.",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Feedback from trainees and faculty on IKS",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Analysis and corrective action taken based on collected feedback",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Signed MOU/agreement/letter with other CSTIs on advancing IKS based institutional culture",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            }
+      },
+      "Pillar 4: Trainee Support": {
+            "17": {
+                  "metric": "To what extent can trainees interact with faculty during the training programme?",
+                  "docs": [
+                        {
+                              "text": "SOP/guidelines defined for trainee and faculty interaction pre, during and post the training programme.",
+                              "stages": "S5",
+                              "template_name": "SOP for Trainee Trainer(Faculty) Interaction",
+                              "template_url": "https://docs.google.com/document/d/1QZ1s8neJIcOD83U1O7X-4hXJB6JEJXQs/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Details of the interaction method used before, during and post the training programs.",
+                              "stages": "S4, S5",
+                              "template_name": "SOP for Trainee Trainer(Faculty) Interaction",
+                              "template_url": "https://docs.google.com/document/d/1QZ1s8neJIcOD83U1O7X-4hXJB6JEJXQs/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Analysis report/minutes of meetings based on the conversation held (before, during and post) with trainees.",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Corrective Measures undertaken based upon the analysis report.",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "18": {
+                  "metric": "To what extent does the institute undertake formal mapping of mentors for trainees from the alumni/faculty/officials (for core courses/long term)?",
+                  "docs": [
+                        {
+                              "text": "Designed SOP/ office order for mentor- mentee mapping",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for Mentor-Mentee Programme",
+                              "template_url": "https://docs.google.com/document/d/1IpTDKxzacC5PuVQd4NdNEjuowpalr38H/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Formal mentor-mentee mapping document as per mentioned in the formal processes document",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Details about the mentor/mentee system on the orientation session conducted (Agenda and roles & responsibilities)",
+                              "stages": "S4, S5",
+                              "template_name": "SOP for the design and implementation of a developmental mentorship programme",
+                              "template_url": "https://docs.google.com/document/d/1mrXC8ReEGuAaltZ3jXVKoiQ8jLvH2HDU/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Analysis report for mapping of mentor to mentees to track effectiveness",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Corrective actions taken report",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "19": {
+                  "metric": "What is the number of probationary trainee officers assigned to each mentor during the probation in the past year?",
+                  "docs": [
+                        {
+                              "text": "Evidence of mentor-mentee mapping justifying the percentage.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            }
+      },
+      "Pillar 5: Digitalisation & Training Delivery": {
+            "20": {
+                  "metric": "What learning channels are utilized by the training institute for training delivery?",
+                  "docs": [
+                        {
+                              "text": "Course training schedule mentioning the mode of course delivery (virtual/in-person)",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for Utilisation of digital infrastructure within the institute",
+                              "template_url": "https://docs.google.com/document/d/1TXH-e0zSKX-pfbz18nOD5qVc9AQtBrFI/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of E-learning videos/ modules used for delivering lectures",
+                              "stages": "S3, S4, S5",
+                              "template_name": "SOP for Utilisation of digital infrastructure within the institute",
+                              "template_url": "https://docs.google.com/document/d/1hOdmydJqB2g3G2clJqOZhkjipE7RcQGs/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Screenshots of E-learning videos",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of modules hosted on iGOT platform",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Screenshot of the course modules hosted on iGOT platform",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Evidence of virtual immersive learning lab",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "21": {
+                  "metric": "What range of learning methods are used by the institute for training delivery?",
+                  "docs": [
+                        {
+                              "text": "Training manual/ schedule highlighting the details of delivering training",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of co-curricular and extra curricular activities",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Copy of signed MoU/SoI/agreement letter or any formal communications (Email chain, office order) for partnership with government/non-governmental/private sector/academia entities for on site learning experience",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "22": {
+                  "metric": "What are the channels available for interaction among trainees & faculty?    Select all applicable:  Emails, informal communication channels, dedicated websites/chat-rooms, formal virtual/in-person interaction.",
+                  "docs": [
+                        {
+                              "text": "Record of the available channels to justify the stage selected: Emails/ informal communication channels/ dedicated websites/chatrooms/ formal virtual/in-person interaction.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "23": {
+                  "metric": "What capacity does the Institute have for converting offline (physical) content to online (digital) content?",
+                  "docs": [
+                        {
+                              "text": "List of in house team dedicated for converting, designing and developing the offline content into digital course content.",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Guidelines/SOP for designing and creation of new digital content.",
+                              "stages": "S4, S5",
+                              "template_name": "SOP for digital training system SOP for Transitioning Training Content to Phygital Model SOP for digital training system (dts)",
+                              "template_url": "https://docs.google.com/document/d/1BuhqREOophIvyjwrdqYw0dg2zXHEXkMu/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of courses developed and digitised by the Institute",
+                              "stages": "S4, S5",
+                              "template_name": "SOP for digital training system (dts)",
+                              "template_url": "https://docs.google.com/document/d/1hAjeXcthKk54ZsFg2oaxRMnoeRQ1lgPD/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Evidence of adherence to Course Evaluation Matrix developed by CBC for all digital content conversion, designing and development.",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Evidence of collaboration with other institutes for digital course content creation.",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "24": {
+                  "metric": "Institute’s courses are digitalized and uploaded on iGOT",
+                  "docs": [
+                        {
+                              "text": "Total list of training modules/content digitalized and uploaded on iGOT justifying the option selected",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Screenshot of content uploaded on iGOT with 4-star rating or above.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "25": {
+                  "metric": "What percentage of the institute’s courses are hybrid? (iGOT/ Learning Management System  - online + offline)",
+                  "docs": [
+                        {
+                              "text": "List of all training courses",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of courses highlighting the mode of course delivery (online + offline) to justify the percentage.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Document highlighting the online course delivery",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for Transitioning Training Content to Phygital Mode",
+                              "template_url": "https://docs.google.com/document/d/1-46VVDTpuw2S94o5XVK_7-E-qHpj5GnB/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        }
+                  ]
+            }
+      },
+      "Pillar 6: Collaboration": {
+            "26": {
+                  "metric": "What percentage of faculty members’ total training hours are spent at other institutes?",
+                  "docs": [
+                        {
+                              "text": "Invitation received for conducting training at other institutes",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for faculty engagement at other institutes",
+                              "template_url": "https://docs.google.com/document/d/1QqEtGsU0KAGMf08w1wGtI_s-2Laf8dJc/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Document depicting the total training hours along with the training hours spent at other institutes in the last 2 years",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Schedule of the training courses conducted at other institutes in last 2 years for justifying the percentage selection",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "27": {
+                  "metric": "To what extent has the institute leveraged faculty/subject matter experts/practitioners from other institutes/organisations/universities to deliver training in the past 2 years?",
+                  "docs": [
+                        {
+                              "text": "List of training courses in the institute",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Tabulated data containing list of total courses and no. of courses for which the institute leveraged faculty/subject matter experts/practitioners from other institutes/organisations/universities to deliver training in the past 2 years to justify the percentage selected",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Invitation email/ letters sent to guest faculty for delivering lectures",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "28": {
+                  "metric": "To what extent has the institute contributed courses/course material to other training institutions/ Universities/Amrit Gyaan Kosh in the last 2 years?",
+                  "docs": [
+                        {
+                              "text": "List of training courses/course material contributed to other training institutes/ universities/Amrit Gyaan Kosh in the last 2 years.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of institutes/ universities to which the courses has been contributed justifying the option selected.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "29": {
+                  "metric": "To what extent does the institute leverage course/course material from other training institutions/Universities/Amrit Gyaan Kosh in the last 2 years?",
+                  "docs": [
+                        {
+                              "text": "List of training courses/course material leveraged from other training institutes/ universities/Amrit Gyaan Kosh in the last 2 years. In the case of Amrit Gyan Kosh, please share the training schedule where the specific case study was incorporated.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of institutes/ universities from which the courses has been leveraged justifying the option selected",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "30": {
+                  "metric": "To what extent has the institute conducted and participated in networking events in the past 2 years?",
+                  "docs": [
+                        {
+                              "text": "Details of networking events organised such as event brochure / agenda etc.",
+                              "stages": "S3, S4, S5",
+                              "template_name": "SOP for organising networking events SOP Organising events for faculty",
+                              "template_url": "https://docs.google.com/document/d/1AWHhss1qatC4s-JzNOzDe6yFZkly4SPP/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Participation Certificate/Photographs in the past 2 years.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Copy of the invitation received.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Details of networking events organised such as event brochure or agenda containing participation from prominent academic institutions (universities/ colleges and CSTIs) or engagement of industry experts/non-governmental entities.",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Record of participation or hosting of international networking events - invitations/letters/ agenda/photographs, etc.",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            }
+      },
+      "Pillar 7: Training Evaluation & Quality Assurance": {
+            "31": {
+                  "metric": "To what extent does the institute have well-defined procedures for updating training courses?",
+                  "docs": [
+                        {
+                              "text": "SOP/guidelines/manuals followed for updating of core and non- core courses",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "2-3 copies of Minutes of Meetings related to courses revision and updation on a sample basis to show periodicity",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Old training course vs New training course",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "32": {
+                  "metric": "How does the institute measure training & learning effectiveness through engagement with concerned stakeholders (trainees, demand side agencies, etc.)?",
+                  "docs": [
+                        {
+                              "text": "SOP/guidelines/manuals regarding engagement with multiple stakeholders for evaluation of training & learning effectiveness of core courses.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "SOP for updating and revising training and to conduct a cost- benefit analysis of training",
+                              "template_url": "https://docs.google.com/document/d/115qDYhLMfpA4pZ-q0tjYzqUBB8vFQI5j/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Documents showcasing the guidelines that are followed periodically for evaluation of training & learning effectiveness of core courses.",
+                              "stages": "S3, S4, S5",
+                              "template_name": "SOP for updating and revising training and to conduct a cost- benefit analysis of training",
+                              "template_url": "https://docs.google.com/document/d/115qDYhLMfpA4pZ-q0tjYzqUBB8vFQI5j/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Details on the feedback received (such as verbal/non-verbal/Google Forms/Survey/ LMS/ Feedback forms) from multiple stakeholders (trainees, demand side agencies, etc.) for core courses at different stages of courses.",
+                              "stages": "S4, S5",
+                              "template_name": "SOP for updating and revising training and to conduct a cost- benefit analysis of training",
+                              "template_url": "https://docs.google.com/document/d/115qDYhLMfpA4pZ-q0tjYzqUBB8vFQI5j/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Analysis report based upon the evidence/data collected.",
+                              "stages": "S5",
+                              "template_name": "SOP for updating and revising training and to conduct a cost- benefit analysis of training",
+                              "template_url": "https://docs.google.com/document/d/115qDYhLMfpA4pZ-q0tjYzqUBB8vFQI5j/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Corrective Action Report.",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "33": {
+                  "metric": "To what extent does the institute have defined learning outcomes for its training courses?",
+                  "docs": [
+                        {
+                              "text": "List of total courses offered by the institute",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of courses for which learning outcomes are defined for the courses justifying the percentage selection.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "34": {
+                  "metric": "To what extent does the institute track learner progression throughout training programmes through interventions?",
+                  "docs": [
+                        {
+                              "text": "List of all core courses offered by the institute",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of all the trainees",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Assessment records for all the core courses offered before, during and after the training programme for evaluating trainee's performance",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Corrective action taken report on the basis of assessment records to enhance teaching and learning",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "35": {
+                  "metric": "To what extent does the institute leverage external faculty/experts for evaluating trainees?",
+                  "docs": [
+                        {
+                              "text": "Selection criteria for subject matter experts (internal examiners, external examiners and experts from the industry/ non-government organizations/ multilateral agencies)",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of internal examiners, external examiners and experts from the industry/ non-government organizations/multilateral agencies",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Training evaluation report by the internal as well as all the external examiners",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Filled complemented feedback (e.g., in terms of behavioural component etc.) from supervisor/ subordinates of the trainees",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Filled self evaluation form by trainees",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            }
+      },
+      "Pillar 8: Operations and Governance": {
+            "36": {
+                  "metric": "The institute has the autonomy to make decisions regarding the allocation of funds.",
+                  "docs": [
+                        {
+                              "text": "Delegation of financial powers/ Memorandum of Association/ registration document for the institutes registered under Societies Registration Act",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "37": {
+                  "metric": "To what extent does the institute conduct budget planning and utilization of training programmes in the last 2 years?",
+                  "docs": [
+                        {
+                              "text": "Record of budget allocated to training programmes",
+                              "stages": "S1, S2, S3, S4, S5",
+                              "template_name": "SOP For finance management",
+                              "template_url": "https://docs.google.com/document/d/1rjXn4o3UEI0trUzJvAyjXhoZARr4jufD/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Record of expenditure incurred on training programmes",
+                              "stages": "S1, S2, S3, S4, S5",
+                              "template_name": "SOP For finance management",
+                              "template_url": "https://docs.google.com/document/d/1rjXn4o3UEI0trUzJvAyjXhoZARr4jufD/edit",
+                              "aasc": "y",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Tabulated data for the percentage calculation",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Analysis report on the budget utilization",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Corrective action taken report on budget utilization",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "38": {
+                  "metric": "How is staff strength determined and managed at your institute?",
+                  "docs": [
+                        {
+                              "text": "Sanctioned strength document as per the guidelines.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Periodic review report of sanctioned strength.",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Document highlighting the no. of filled and vacant positions in the institutes in the last 5 years justifying the sanctioned posts are filled regularly.",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "39": {
+                  "metric": "The institute has the autonomy to generate revenue from sources other than the parent Ministry/Department/Organisation and retain/use the surplus at its discretion.",
+                  "docs": [
+                        {
+                              "text": "Delegation of financial power/ document stating autonomy to take up revenue generating activities from sources other than parent Ministry/Department/ Organisation.",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Document highlighting the utilization of revenue generated.",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Document showcasing the total revenue generated by the institute in the last year.",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Document showing the revenue generated from other sources in the last year justifying the percentage selection.",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "40": {
+                  "metric": "The institute has the autonomy to set and amend its own internal procedures for operations as well as training.",
+                  "docs": [
+                        {
+                              "text": "Delegation of administrative powers highlighting full administrative autonomy",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "41": {
+                  "metric": "To what extent does the institute maintain and utilize data on the training programmes conducted?",
+                  "docs": [
+                        {
+                              "text": "Screenshots of the digital database highlighting all the records are digitally maintained using a single data sharing platform such as LMS etc.",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Screenshot of data analytics dashboard justifying real time updation of data.",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "42": {
+                  "metric": "Does the institute have robust mechanisms for timely and regular sharing of information between stakeholders (Ministry/ Department/Organisation)?",
+                  "docs": [
+                        {
+                              "text": "SOP/guidelines/manual (showcasing timeline) for the exchange of information between stakeholders.",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Document highlighting that the information is shared with stakeholders on a regular basis.",
+                              "stages": "S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Corrective action report emerging out of correspondence with stakeholders.",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            },
+            "43": {
+                  "metric": "To what extent does the institute engage with the local/regional community in hiring non- teaching staff for non-specialized positions?",
+                  "docs": [
+                        {
+                              "text": "Policy document (SOP/ work order/ MOU/ Agreement, etc.) for employing non-teaching staff from the local community",
+                              "stages": "S3, S4, S5",
+                              "template_name": "SOP for Selection and appointment of staff (other than faculty)",
+                              "template_url": "https://docs.google.com/document/d/1_NMW8ED2t5uvrXxJOuRbzZnePnVYSW2k/edit",
+                              "aasc": "",
+                              "rgniipm": "y",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of all the non- teaching staff",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "List of non-teaching staff belongs to local community justifying the percentage selection",
+                              "stages": "S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Email/ any communication sent to non- teaching staff to be hired for non- specialized positions",
+                              "stages": "S2, S3, S4, S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        },
+                        {
+                              "text": "Any vendor agreement / professional service contract/ work order that provides local manpower",
+                              "stages": "S5",
+                              "template_name": "",
+                              "template_url": "",
+                              "aasc": "",
+                              "rgniipm": "",
+                              "nssta": ""
+                        }
+                  ]
+            }
+      }
+};
+
+    // Weightage (%) for each pillar
+    const PILLAR_WEIGHTS = {
+      "Pillar 1: Training Needs Assessment & Course Design": 10,
+      "Pillar 2: Faculty Development": 20,
+      "Pillar 3: Resource and Training Targets": 15,
+      "Pillar 4: Trainee Support": 5,
+      "Pillar 5: Digitalisation & Training Delivery": 15,
+      "Pillar 6: Collaboration": 15,
+      "Pillar 7: Training Evaluation & Quality Assurance": 10,
+      "Pillar 8: Operations and Governance": 10
+};
+
+    // Brief descriptions for each pillar (shown on the repository page header)
+    const PILLAR_DESCRIPTIONS = {
+      "Pillar 1: Training Needs Assessment & Course Design": "Evaluates the institute's capacity to systematically identify training needs and design responsive, competency-aligned training programmes.",
+      "Pillar 2: Faculty Development": "Assesses the selection, onboarding, and professional development of full-time and guest faculty members.",
+      "Pillar 3: Resource and Training Targets": "Examines resource planning, infrastructure, staff performance management, green initiatives, and Indian Knowledge Systems integration.",
+      "Pillar 4: Trainee Support": "Measures the quality of trainee-faculty interaction, mentorship mapping, and support structures for probationary officers.",
+      "Pillar 5: Digitalisation & Training Delivery": "Evaluates the use of digital channels, blended learning, iGOT uploads, and content digitisation capacity.",
+      "Pillar 6: Collaboration": "Assesses the extent of inter-institutional collaboration, course sharing, and participation in networking events.",
+      "Pillar 7: Training Evaluation & Quality Assurance": "Examines procedures for course updates, learning effectiveness measurement, learner tracking, and external evaluation.",
+      "Pillar 8: Operations and Governance": "Covers financial autonomy, budget planning, staff management, information sharing, and community engagement."
+    };
+
+    // Emoji icons for each pillar card on the homepage
+    const PILLAR_ICONS = ["🎯","👩‍🏫","📦","🎓","💻","🤝","📊","🏛️"];
+
+    // ============================================================
+    // HELPER: Determine file type icon + button style from doc text
+    // Looks for keywords in the document name to guess file type
+    // ============================================================
+    function getDocStyle(docText) {
+      const t = docText.toLowerCase();
+      // Check for SOP, procedure documents → DOCX (Word)
+      if (t.includes('sop') || t.includes('manual') || t.includes('procedure') || t.includes('policy') || t.includes('minutes') || t.includes('letter') || t.includes('circular') || t.includes('office order') || t.includes('agenda') || t.includes('mou') || t.includes('report')) {
+        return { type: 'doc', label: 'DOC', btnClass: 'download', btnText: '↓ Template' };
+      }
+      // Check for list, data, tabulated → XLSX (Excel)
+      if (t.includes('list') || t.includes('tabulated') || t.includes('record') || t.includes('data') || t.includes('mapping') || t.includes('evidence of') || t.includes('screenshot')) {
+        return { type: 'xls', label: 'XLS', btnClass: 'download', btnText: '↓ Tracker' };
+      }
+      // Check for certificates, feedback forms → PDF
+      if (t.includes('certificate') || t.includes('feedback') || t.includes('photo') || t.includes('copy of') || t.includes('filled') || t.includes('proof')) {
+        return { type: 'pdf', label: 'PDF', btnClass: 'view', btnText: '👁 View Sample' };
+      }
+      // Default → generic document
+      return { type: 'gen', label: 'DOC', btnClass: 'download', btnText: '↓ Download' };
+    }
+
+    // ============================================================
+    // BUILD HOMEPAGE: Generate the 8 pillar cards in the grid
+    // ============================================================
+    window.buildHomepage = function buildHomepage() {
+      const grid = document.getElementById('pillars-grid');
+      const pillars = Object.keys(REPOSITORY_DATA);
+
+      pillars.forEach((pillarName, idx) => {
+        // Extract just the short name after "Pillar N: "
+        const shortName = pillarName.replace(/^Pillar \d+: /, '');
+
+        // Look up the weightage for this pillar from PILLAR_WEIGHTS
+        const weight = PILLAR_WEIGHTS[pillarName] || '';
+        // Count the number of metrics in this pillar
+        const metricCount = Object.keys(REPOSITORY_DATA[pillarName]).length;
+
+        // Create card element
+        const card = document.createElement('div');
+        card.className = 'pillar-card';
+        card.innerHTML = `
+          <h3>${shortName}</h3>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:10px;">
+            <span style="font-size:12px;color:var(--saffron);font-weight:700;">Weightage: ${weight}%</span>
+            <span style="font-size:12px;color:var(--text-light);">|</span>
+            <span style="font-size:12px;color:var(--text-mid);font-weight:600;">${metricCount} Metrics</span>
+          </div>
+          <div class="browse-link" style="margin-top:14px;">Browse Resources →</div>
+        `;
+
+        // Clicking the card navigates to that pillar in the repository
+        card.addEventListener('click', () => {
+          showPage('repo');
+          // Small delay to let page render first, then activate the correct pillar
+          setTimeout(() => activatePillar(idx), 50);
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    // ============================================================
+    // BUILD REPOSITORY PAGE: Generate sidebar + all pillar sections
+    // ============================================================
+    window.buildRepository = function buildRepository() {
+      const sidebarEl = document.getElementById('sidebar-items');
+      const contentsEl = document.getElementById('pillar-contents');
+      const pillars = Object.keys(REPOSITORY_DATA);
+
+      pillars.forEach((pillarName, pillarIdx) => {
+        const metrics = REPOSITORY_DATA[pillarName];
+        const shortName = pillarName.replace(/^Pillar \d+: /, '');
+
+        // --- SIDEBAR ITEM ---
+        const sideItem = document.createElement('div');
+        sideItem.className = 'sidebar-item' + (pillarIdx === 0 ? ' active' : '');
+        sideItem.id = `side-${pillarIdx}`;
+        sideItem.innerHTML = `
+          <div class="sidebar-num">${pillarIdx + 1}</div>
+          <div class="sidebar-label">${shortName}</div>
+        `;
+        sideItem.addEventListener('click', () => activatePillar(pillarIdx));
+        sidebarEl.appendChild(sideItem);
+
+        // --- MAIN CONTENT for this pillar ---
+        const pillarDiv = document.createElement('div');
+        pillarDiv.className = 'pillar-content' + (pillarIdx === 0 ? ' active' : '');
+        pillarDiv.id = `pillar-${pillarIdx}`;
+
+        // Look up weightage for this pillar
+        const weight = PILLAR_WEIGHTS[pillarName] || '';
+
+        // Pillar header section
+        let html = `
+          <div class="pillar-header">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+              <div class="pillar-badge">Pillar ${pillarIdx + 1} of 8</div>
+              <div style="display:inline-block;background:#FFF3E0;color:#C96A2A;font-size:15px;font-weight:700;padding:6px 16px;border-radius:20px;">Weightage: ${weight}%</div>
+            </div>
+            <h2>${pillarName}</h2>
+            <p>${PILLAR_DESCRIPTIONS[pillarName]}</p>
+          </div>
+        `;
+
+        // --- METRIC ACCORDIONS ---
+        html += `<div style="margin-bottom:16px;font-size:15px;color:var(--text-light);font-weight:600;letter-spacing:1px;text-transform:uppercase;">${Object.keys(metrics).length} Metrics — Click to expand</div>`;
+
+                let localMetricIdx = 0;
+        Object.entries(metrics).forEach(([metricNo, metricData]) => {
+          localMetricIdx++;
+          // Build the document items inside each accordion
+          let docsHtml = '';
+          metricData.docs.forEach(doc => {
+            const docText = doc.text || doc;
+            const instChips = [];
+            if (doc.aasc    === 'y' && doc.template_name) instChips.push({ inst: 'AASC',    name: doc.template_name, url: doc.template_url });
+            if (doc.rgniipm === 'y' && doc.template_name) instChips.push({ inst: 'RGNIIPM', name: doc.template_name, url: doc.template_url });
+            if (doc.nssta   === 'y' && doc.template_name) instChips.push({ inst: 'NSSTA',   name: doc.template_name, url: doc.template_url });
+            const instHtml = instChips.map(c => {
+              const linked = c.url ? `<a href="${c.url}" target="_blank" style="color:inherit;text-decoration:underline;">${c.name}</a>` : c.name;
+              return `<span style="display:inline-block;background:#FFF3E0;color:#C96A2A;font-size:14px;font-weight:700;padding:5px 13px;border-radius:10px;margin-right:6px;margin-top:4px;">${c.inst}: ${linked}</span>`;
+            }).join('');
+            docsHtml += `
+              <div class="doc-item">
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                  <span style="color:var(--blue-mid);font-size:20px;line-height:1.3;flex-shrink:0;font-weight:700;">→</span>
+                  <div class="doc-text">${docText}</div>
+                </div>
+                ${instHtml ? `<div style="margin-top:8px;padding-left:30px;">${instHtml}</div>` : ''}
+              </div>
+            `;
+          });
+
+          html += `
+            <div class="metric-accordion" id="acc-${pillarIdx}-${metricNo}">
+              <div class="metric-head" onclick="toggleAccordion('acc-${pillarIdx}-${metricNo}')">
+                <div class="metric-head-left">
+                  <div class="metric-num-badge">${localMetricIdx}</div>
+                  <h4>${metricData.metric}</h4>
+                </div>
+                <span class="metric-chevron">▾</span>
+              </div>
+              <div class="metric-body">
+                <div class="docs-title">📁 Evidence Requirements & Supporting Documents</div>
+                <div class="doc-list">
+                  ${docsHtml}
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        pillarDiv.innerHTML = html;
+        contentsEl.appendChild(pillarDiv);
+      });
+    }
+
+    // ============================================================
+    // INTERACTION: Switch between the 4 top-level pages
+    // ============================================================
+    // Assigned to window so onclick= attributes in HTML can call it
+    window.showPage = function showPage(pageId) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      // Show the requested page
+      document.getElementById('page-' + pageId).classList.add('active');
+
+      // Update the active state on nav links
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      const activeLink = document.getElementById('link-' + pageId);
+      if (activeLink) activeLink.classList.add('active');
+
+      // Scroll back to the top of the page
+      window.scrollTo(0, 0);
+    }
+
+    // ============================================================
+    // INTERACTION: Switch between pillars in the repository
+    // ============================================================
+    window.activatePillar = function activatePillar(idx) {
+      // Deactivate all sidebar items and pillar contents
+      document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.pillar-content').forEach(el => el.classList.remove('active'));
+
+      // Activate the chosen one
+      document.getElementById(`side-${idx}`).classList.add('active');
+      document.getElementById(`pillar-${idx}`).classList.add('active');
+
+      // Scroll main area to the top
+      const main = document.querySelector('.repo-main');
+      if (main) main.scrollTop = 0;
+      window.scrollTo(0, 0);
+    }
+
+    // ============================================================
+    // INTERACTION: Open/close a metric accordion
+    // ============================================================
+    window.toggleAccordion = function toggleAccordion(id) {
+      const el = document.getElementById(id);
+      el.classList.toggle('open');
+    }
+
+    // ============================================================
+    // INTERACTION: Stage stepper — show description for clicked stage
+    // ============================================================
+    const STAGE_DESCRIPTIONS = [
+      // These descriptions apply to all pillars
+      "<strong>Stage 1 — Initial:</strong> Practices are ad hoc or not yet formally documented. The institution is aware of the need but has not yet implemented structured processes.",
+      "<strong>Stage 2 — Developing:</strong> Basic processes exist but are inconsistently applied. Some documentation is in place, though practices vary across departments.",
+      "<strong>Stage 3 — Defined:</strong> Processes are clearly defined, documented, and consistently applied across the institution. Staff are trained on standard procedures.",
+      "<strong>Stage 4 — Managed:</strong> Processes are measured and monitored using data-driven approaches. Outcomes are regularly reviewed and corrective actions are taken.",
+      "<strong>Stage 5 — Optimising:</strong> The institution continuously improves processes through innovation and learning. Best practices are shared with peer institutions."
+    ];
+
+    window.selectStage = function selectStage(btn, pillarIdx, stageNum) {
+      // Find the stepper container and reset all buttons
+      const stepper = btn.closest('.stepper');
+      stepper.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Update the description text below the stepper
+      const descEl = document.getElementById(`stage-desc-${pillarIdx}`);
+      descEl.textContent = '';                // Clear first
+      descEl.innerHTML = STAGE_DESCRIPTIONS[stageNum - 1];
+      descEl.classList.add('active');
+    }
+
+    // ============================================================
+    // INTERACTION: Download button — show a toast notification
+    // (In a real system, this would trigger an actual file download)
+    // ============================================================
+    window.handleDownload = function handleDownload(event, docName) {
+      event.stopPropagation(); // Don't also toggle the accordion
+      showToast('📥 Template request logged: "' + docName.substring(0, 50) + (docName.length > 50 ? '…' : '') + '"');
+    }
+
+    // Show a small notification at the bottom-right of the screen
+    window.showToast = function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      // Auto-hide after 3 seconds
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // ============================================================
+    // INITIALISE: Build all dynamic content when the page loads
+    // ============================================================
+    buildHomepage();    // Creates the 8 pillar cards on the homepage
+    buildRepository();  // Creates all sidebar items + pillar sections
+
+  </script>
+
+</body>
+</html>
