@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NSCSTI 2.0 Self-Assessment</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  /* ---- CSS VARIABLES: colours from index.html ---- */
+  :root {
+    --blue-deep:   #1A3A5C;
+    --blue-mid:    #2B5E96;
+    --blue-light:  #E8F0FA;
+    --saffron:     #E07B39;
+    --green:       #2E7D52;
+    --white:       #FFFFFF;
+    --off-white:   #F6F8FC;
+    --text-dark:   #1C2B3A;
+    --text-mid:    #4A5D6E;
+    --text-light:  #7A8D9E;
+    --border:      #D0DDE9;
+    --header-h:    64px;
+    --sidebar-w:   260px;
+    --font:        'Source Sans 3', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { height: 100%; }
+  body {
+    min-height: 100%;
+    font-family: var(--font);
+    color: var(--text-dark);
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+    line-height: 1.65;
+  }
+
+  /* ---- GOOGLE FONT ---- */
+  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700;900&display=swap');
+
+  /* ---- SCREENS ---- */
+  .screen { display: none; flex: 1; flex-direction: column; overflow-x: hidden; overflow-y: auto; }
+  .screen.active { display: flex; }
+
+  /* ---- TOP NAV: matches index.html exactly ---- */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: var(--blue-deep);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    z-index: 1000;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 12px; cursor: pointer;
+  }
+  .nav-brand-text {
+    color: white; font-family: var(--font);
+    font-size: 22px; font-weight: 700; letter-spacing: 0.3px;
+  }
+  .nav-links {
+    display: flex; align-items: center; gap: 8px; list-style: none;
+  }
+  .nav-links a {
+    color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 600;
+    padding: 8px 14px; border-radius: 6px;
+    transition: background 0.2s, color 0.2s; letter-spacing: 0.2px;
+    text-decoration: none;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    background: rgba(255,255,255,0.15); color: white; text-decoration: none;
+  }
+
+  /* ---- WELCOME SCREEN ---- */
+  #screen-welcome {
+    padding-top: var(--header-h);
+  }
+  .welcome-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 50px 40px 60px;
+  }
+  .welcome-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .welcome-tag {
+    display: inline-block;
+    background: rgba(224,123,57,0.15);
+    border: 1px solid rgba(224,123,57,0.4);
+    color: var(--saffron);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .welcome-inner h1 {
+    font-size: clamp(24px, 3.5vw, 38px);
+    color: var(--blue-deep);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+  .welcome-inner p { color: var(--text-mid); font-size: 16px; line-height: 1.75; margin-bottom: 14px; }
+
+  /* stats row on welcome screen */
+  .stats-row { display: flex; gap: 14px; margin: 28px 0; flex-wrap: wrap; }
+  .stat-card {
+    flex: 1; min-width: 110px;
+    background: var(--blue-light);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 14px;
+    text-align: center;
+  }
+  .stat-num { font-size: 2rem; font-weight: 900; color: var(--blue-deep); line-height: 1; }
+  .stat-lbl { font-size: 12px; color: var(--text-mid); text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
+
+  /* pillar pills on welcome screen */
+  .pillar-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+  .pillar-pill {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--white);
+    background: var(--blue-mid);
+  }
+  .pillar-pill.odd { background: var(--saffron); }
+
+  /* begin button */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 28px; border-radius: 8px;
+    font-family: var(--font); font-size: 15px; font-weight: 700;
+    cursor: pointer; border: none; transition: opacity 0.15s, transform 0.1s, background 0.2s;
+  }
+  .btn:hover  { opacity: 0.88; transform: translateY(-1px); }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary   { background: var(--saffron); color: var(--white); box-shadow: 0 4px 16px rgba(224,123,57,0.35); }
+  .btn-secondary { background: transparent; color: var(--blue-mid); border: 2px solid var(--blue-mid); }
+  .btn-green     { background: var(--green); color: var(--white); }
+  .btn-outline   { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,0.5); }
+
+  /* ---- SURVEY SCREEN ---- */
+  #screen-survey {
+    flex-direction: row;
+    padding-top: var(--header-h);
+    overflow-x: hidden;
+    overflow-y: hidden;
+    height: 100vh;
+  }
+
+  /* left sidebar */
+  .survey-sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: calc(100vh - var(--header-h));
+  }
+  .sidebar-head {
+    padding: 20px 18px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-head-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--text-light); margin-bottom: 6px;
+  }
+  .sb-progress-track { background: var(--border); border-radius: 4px; height: 5px; overflow: hidden; }
+  .sb-progress-fill  { height: 100%; background: var(--blue-mid); border-radius: 4px; transition: width 0.4s; }
+  .sb-progress-text  { font-size: 12px; color: var(--text-mid); margin-top: 6px; }
+
+  /* sidebar pillar items */
+  .sidebar-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 12px 18px;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    transition: all 0.15s;
+  }
+  .sidebar-item:hover { background: var(--blue-light); }
+  .sidebar-item.active {
+    background: var(--blue-light);
+    border-left-color: var(--blue-mid);
+  }
+  .sidebar-item.done {
+    border-left-color: var(--green);
+    background: rgba(46,125,82,0.06);
+  }
+  .si-num {
+    min-width: 22px; height: 22px;
+    background: var(--border); border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: var(--text-mid);
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .sidebar-item.active .si-num { background: var(--blue-mid); color: var(--white); }
+  .sidebar-item.done   .si-num { background: var(--green);    color: var(--white); }
+  .si-name  { font-size: 13px; font-weight: 600; color: var(--text-dark); line-height: 1.4; }
+  .si-count { font-size: 11px; color: var(--text-light); margin-top: 1px; }
+
+  /* sidebar footer: overall progress % */
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px 18px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .sb-pct-big {
+    font-size: 2.4rem; font-weight: 300;
+    color: var(--blue-mid); line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .sb-pct-sym { font-size: 1.2rem; font-weight: 700; color: var(--blue-mid); vertical-align: super; }
+  .sb-pct-lbl { font-size: 11px; color: var(--text-light); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* right main survey area */
+  .survey-main {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--header-h));
+  }
+
+  /* pillar header banner */
+  .pillar-banner {
+    background: var(--blue-deep);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+  .pillar-no-pill {
+    background: rgba(255,255,255,0.18);
+    color: white;
+    font-size: 12px; font-weight: 700;
+    padding: 5px 12px; border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .pillar-banner h3 { font-size: 17px; font-weight: 700; color: white; }
+  .pillar-wt-pill {
+    background: rgba(224,123,57,0.25);
+    border: 1px solid rgba(224,123,57,0.5);
+    color: #F5C07A;
+    font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px;
+    white-space: nowrap; flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  /* question area */
+  .questions-wrap {
+    padding: 28px 32px 16px;
+    flex: 1;
+  }
+
+  /* question card */
+  .q-card {
+    background: var(--white);
+    border: none;
+    border-radius: 10px;
+    padding: 26px 26px 20px;
+    animation: fadeSlide 0.25s ease forwards;
+  }
+  .q-card.answered {}
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* metric label + counter */
+  .q-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .q-metric-badge {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    background: var(--blue-light); color: var(--blue-mid);
+    padding: 3px 10px; border-radius: 5px;
+  }
+  .q-counter-badge {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    background: var(--off-white); color: var(--text-light);
+    padding: 3px 10px; border-radius: 5px; border: 1px solid var(--border);
+  }
+
+  /* question subtitle text */
+  .q-subtitle {
+    font-size: 16px; font-weight: 600; color: var(--text-dark);
+    line-height: 1.6; margin-bottom: 20px;
+  }
+
+  /* stage radio options */
+  .stage-options { display: flex; flex-direction: column; gap: 8px; }
+  .stage-options input[type="radio"] { display: none; }
+
+  .stage-label {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    font-size: 14px; color: var(--text-mid); line-height: 1.55;
+  }
+  .stage-label:hover { border-color: var(--blue-mid); background: rgba(43,94,150,0.03); }
+
+  /* radio circle */
+  .radio-circle {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid #c8c8c8; flex-shrink: 0; margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.14s, background 0.14s;
+  }
+  .radio-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: white; opacity: 0; transition: opacity 0.14s;
+  }
+
+  /* stage tag inside label */
+  .stage-tag {
+    font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+    background: var(--off-white); color: var(--text-light);
+    padding: 2px 8px; border-radius: 4px; flex-shrink: 0; margin-top: 2px;
+    border: 1px solid var(--border);
+  }
+
+  /* checked state */
+  .stage-options input[type="radio"]:checked + .stage-label {
+    border-color: var(--blue-mid);
+    background: var(--blue-light);
+    color: var(--text-dark);
+    font-weight: 500;
+  }
+  .stage-options input[type="radio"]:checked + .stage-label .radio-circle {
+    border-color: var(--blue-mid); background: var(--blue-mid);
+  }
+  .stage-options input[type="radio"]:checked + .stage-label .radio-dot { opacity: 1; }
+  .stage-options input[type="radio"]:checked + .stage-label .stage-tag {
+    background: var(--blue-mid); color: white; border-color: var(--blue-mid);
+  }
+
+  /* dots progress under card */
+  .dots-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px 32px 6px; }
+  .cdot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--border); transition: all 0.2s; flex-shrink: 0;
+  }
+  .cdot-done    { background: var(--green); }
+  .cdot-current { background: var(--blue-mid); transform: scale(1.4); }
+
+  /* warning banner */
+  .warn-bar {
+    margin: 4px 32px 0;
+    background: #fff8e1; border: 1px solid #e07b39;
+    color: #7a4500; border-radius: 7px; padding: 9px 14px;
+    font-size: 14px; display: none;
+  }
+
+  /* bottom nav bar */
+  .section-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 32px;
+    border-top: 1px solid var(--border);
+    background: var(--white);
+    flex-shrink: 0;
+    position: sticky; bottom: 0; z-index: 10;
+  }
+
+  /* ---- RESULTS SCREEN ---- */
+  #screen-results {
+    padding-top: var(--header-h);
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .results-body { flex: 1; overflow-y: auto; padding: 40px; }
+  .results-inner { max-width: 900px; margin: 0 auto; }
+
+  /* results hero banner */
+  .results-hero {
+    background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-mid) 100%);
+    border-radius: 12px;
+    padding: 30px 36px;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .results-hero::after {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .results-hero h2 { font-size: 22px; font-weight: 800; color: white; letter-spacing: 0.05em; text-transform: uppercase; }
+  .results-hero p  { color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 6px; }
+
+  /* overall score display */
+  .overall-score-card {
+    background: white; border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px 32px; margin-bottom: 24px;
+    display: flex; align-items: center; gap: 30px; flex-wrap: wrap;
+  }
+  .overall-score-num {
+    font-size: 4rem; font-weight: 900; color: var(--blue-deep); line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  /* % symbol same size and weight as the number */
+  .overall-score-num span { font-size: 4rem; color: var(--blue-deep); font-weight: 900; letter-spacing: -0.04em; }
+  .overall-score-info h3 { font-size: 18px; color: var(--blue-deep); margin-bottom: 4px; }
+  .overall-score-info p  { font-size: 14px; color: var(--text-mid); }
+
+  /* pillar score grid */
+  .pillar-scores-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-light); margin-bottom: 14px;
+  }
+  .pillar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+
+  .pillar-score-card {
+    background: white; border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px; position: relative; overflow: hidden;
+  }
+  .psc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  .psc-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .psc-no-pill {
+    background: var(--blue-light); color: var(--blue-mid);
+    font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  }
+  .psc-wt-pill {
+    background: rgba(224,123,57,0.12); color: var(--saffron);
+    font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  }
+  .psc-score-num {
+    font-size: 1.8rem; font-weight: 900; line-height: 1;
+    color: var(--blue-deep);
+  }
+  .psc-score-num .psc-denom { font-size: 1rem; font-weight: 400; color: var(--text-light); }
+  .psc-name { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 10px; line-height: 1.4; }
+  .psc-bar-track { background: var(--border); border-radius: 4px; height: 6px; overflow: hidden; }
+  .psc-bar-fill  { height: 100%; border-radius: 4px; transition: width 0.6s 0.3s; }
+  .psc-pct-row { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+  .psc-pct { font-size: 13px; font-weight: 700; }
+
+  /* results chart container */
+  .chart-wrap {
+    background: white; border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px 32px; margin-bottom: 24px;
+  }
+  .chart-wrap h3 {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--text-light); margin-bottom: 20px; text-align: center;
+  }
+
+  /* bar fill: single neutral colour, no colour coding */
+  .psc-bar-fill  { height: 100%; border-radius: 4px; background: var(--blue-mid); transition: width 0.6s 0.3s; }
+
+  /* ---- GRADING KEY TABLE ---- */
+  .grade-key {
+    width: 100%; border-collapse: collapse;
+    margin-top: 8px; font-size: 14px;
+  }
+  .grade-key th {
+    background: var(--blue-deep); color: white;
+    padding: 10px 14px; text-align: left;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.3px;
+  }
+  .grade-key td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .grade-key tr:last-child td { border-bottom: none; }
+  .grade-key tr:nth-child(even) td { background: var(--off-white); }
+  /* star rating cell */
+  .star-cell { letter-spacing: 2px; font-size: 16px; }
+  .star-on  { color: #F5A623; }
+  .star-off { color: #C8C8C8; }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    #screen-survey { flex-direction: column; overflow-y: auto; height: auto; }
+    .survey-sidebar {
+      width: 100%; height: auto; flex-direction: row;
+      border-right: none; border-bottom: 1px solid var(--border);
+      overflow-x: auto; overflow-y: hidden; padding: 10px 14px;
+      gap: 8px;
+    }
+    .sidebar-head { display: none; }
+    .sidebar-item {
+      padding: 6px 12px; border-left: none;
+      border-bottom: 3px solid transparent; border-radius: 6px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .sidebar-item.active { border-left-color: transparent; border-bottom-color: var(--blue-mid); }
+    .si-count { display: none; }
+    .sidebar-footer { margin-top: 0; margin-left: auto; border-top: none; border-left: 1px solid var(--border); padding: 4px 14px; white-space: nowrap; }
+    .sb-pct-big { font-size: 1.6rem; }
+    .sb-pct-lbl { display: none; }
+    .survey-main { height: auto; overflow-y: visible; }
+    .pillar-grid { grid-template-columns: 1fr; }
+    .questions-wrap { padding: 18px 18px 12px; }
+    .pillar-banner { padding: 14px 18px; }
+    .section-nav { padding: 10px 18px; }
+    .dots-row { padding: 10px 18px 4px; }
+  }
+  @media (max-width: 480px) {
+    .overall-score-card { flex-direction: column; }
+    .maturity-badge { margin-left: 0; }
+    .results-body { padding: 20px 16px; }
+    .nav { padding: 0 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- FIXED TOP NAV: matches index.html -->
+<nav class="nav">
+  <div class="nav-brand" onclick="window.location.href='index.html'">
+    <div class="nav-brand-text">NSCSTI 2.0</div>
+  </div>
+
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#repo">Repository</a></li>
+    <li><a href="survey.html" class="active">Self-Assessment</a></li>
+  </ul>
+</nav>
+
+
+<!-- SCREEN 1: WELCOME -->
+<div id="screen-welcome" class="screen active">
+  <div class="welcome-body">
+    <div class="welcome-inner">
+      <div class="welcome-tag">NSCSTI 2.0 Self-Assessment</div>
+
+      <p>
+        This self-assessment tool helps Training Institutions tentatively evaluate their current maturity level across the 8 pillars of the NSCSTI 2.0 framework. For each metric, select the stage that best describes your institution's current practices.
+      </p>
+      <p>
+        Your responses are used to calculate a pillar-wise percentage score and an overall weighted
+        percentage score, reflecting the relative importance of each pillar.
+      </p>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num">8</div><div class="stat-lbl">Pillars</div></div>
+        <div class="stat-card"><div class="stat-num">43</div><div class="stat-lbl">Metrics</div></div>
+        <div class="stat-card"><div class="stat-num">5</div><div class="stat-lbl">Stages</div></div>
+      </div>
+
+      <button class="btn btn-primary" style="font-size:16px;padding:14px 32px;" onclick="startSurvey()">
+        Begin Self-Assessment
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- SCREEN 2: SURVEY -->
+<div id="screen-survey" class="screen">
+
+  <!-- Left sidebar -->
+  <div class="survey-sidebar">
+    <!-- progress bar kept for js updates but not displayed -->
+    <div style="display:none;">
+      <div class="sb-progress-fill" id="sb-fill" style="width:0%"></div>
+      <div id="sb-text"></div>
+    </div>
+    <div id="sidebar-items"></div>
+    <div class="sidebar-footer">
+      <div class="sb-pct-big"><span id="sb-pct-num">0</span><span class="sb-pct-sym">%</span></div>
+      <div class="sb-pct-lbl">completed</div>
+    </div>
+  </div>
+
+  <!-- Right main content -->
+  <div class="survey-main" id="survey-main">
+    <!-- pillar banner removed -->
+    <div id="pillar-banner-wrap" style="display:none;"></div>
+    <!-- question card injected here -->
+    <div class="questions-wrap" id="questions-wrap"></div>
+    <!-- dot indicators -->
+    <div class="dots-row" id="dots-row"></div>
+    <!-- warning message -->
+    <div class="warn-bar" id="warn-bar">Please select a stage before moving on.</div>
+    <!-- prev / next navigation -->
+    <div class="section-nav">
+      <button class="btn btn-secondary" id="btn-prev" onclick="prevQ()">Previous</button>
+      <button class="btn btn-primary"   id="btn-next" onclick="nextQ()">Next</button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- SCREEN 3: RESULTS -->
+<div id="screen-results" class="screen">
+  <div class="results-body">
+    <div class="results-inner">
+
+      <div class="results-hero">
+        <h2>Self-Assessment Results</h2>
+      </div>
+
+      <!-- overall score -->
+      <div class="overall-score-card" id="overall-card"></div>
+
+      <!-- pillar-wise scores -->
+      <div class="pillar-scores-title">Pillar-wise Performance</div>
+      <div class="pillar-grid" id="pillar-grid"></div>
+
+      <!-- grading key -->
+      <div class="chart-wrap" style="margin-bottom:24px;">
+        <h3>Grading Key</h3>
+        <table class="grade-key">
+          <thead>
+            <tr>
+              <th>Mark Range</th>
+              <th>Grade</th>
+              <th>Star Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>89 – 100</td>
+              <td>Outstanding / सर्वोत्कृष्ट</td>
+              <td class="star-cell"><span class="star-on">★★★★★</span></td>
+            </tr>
+            <tr>
+              <td>77 – 89</td>
+              <td>Excellent / अति उत्कृष्ट</td>
+              <td class="star-cell"><span class="star-on">★★★★</span><span class="star-off">★</span></td>
+            </tr>
+            <tr>
+              <td>65 – 77</td>
+              <td>Very Good / उत्कृष्ट</td>
+              <td class="star-cell"><span class="star-on">★★★</span><span class="star-off">★★</span></td>
+            </tr>
+            <tr>
+              <td>53 – 65</td>
+              <td>Good / अति उत्तम</td>
+              <td class="star-cell"><span class="star-on">★★</span><span class="star-off">★★★</span></td>
+            </tr>
+            <tr>
+              <td>40 – 53</td>
+              <td>Fair / उत्तम</td>
+              <td class="star-cell"><span class="star-on">★</span><span class="star-off">★★★★</span></td>
+            </tr>
+            <tr>
+              <td>0 – 40</td>
+              <td>No Rating</td>
+              <td class="star-cell"><span class="star-off">★★★★★</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- restart button -->
+      <div style="text-align:center;margin-top:10px;">
+        <button class="btn btn-secondary" onclick="restartSurvey()">Retake Assessment</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ================================================================
+// ALL SURVEY DATA from the Excel file
+// ================================================================
+const PILLARS = [
+  {
+    pillar_no: "Pillar 1",
+    pillar_title: "Training Needs Assessment and Course Design",
+    num_metrics: 5, weightage: 10, max_marks: 25,
+    metrics: [
+      { metric_no: "Metric 1", subtitle: "Does the institute/Training directorate (as applicable) have in-house capacity to identify Training Needs?",
+        stages: [{stage:"S1",description:"No in-house capacity to conduct Training Needs Assessment",marks:0},{stage:"S2",description:"Has in-house capacity to conduct Training Needs Assessment. No inputs sought from the parent Ministry/Department/Organisation.",marks:2},{stage:"S3",description:"Has in-house capacity to conduct Training Needs Assessment: Inputs are sought from parent Ministry/Department/Organisations/Cadre controlling authority/General Administration Dept/Training Directorate on need basis.",marks:3},{stage:"S4",description:"Has in-house capacity to conduct Training Needs Assessment: Inputs are obtained from parent Ministry/Department/Organisations/Cadre controlling authority/General Administration Dept/Training Directorate for developing training courses at predefined intervals. The institute analyses identified needs, but no follow-up actions are undertaken.",marks:4},{stage:"S5",description:"Has in-house capacity to conduct Training Needs Assessment: Stakeholder discussions are conducted at predefined intervals. Conducts Training Needs Assessment in collaboration with officers from the parent Ministry/Department/Organisation and other stakeholders. The institute analyses identified needs and re-designs/updates training programmes.",marks:5}]},
+      { metric_no: "Metric 2", subtitle: "To what extent are the training needs identified through active collaboration with leading national/international institutes?",
+        stages: [{stage:"S1",description:"The institute has no partnerships or collaborations with national/international institutes.",marks:0},{stage:"S2",description:"Collaboration and partnerships are established with national/international institutes, but these are not engaged for Training Needs Assessment.",marks:2},{stage:"S3",description:"Collaboration and partnerships are established with national/international institutes, and these resources are leveraged for designing the Training Needs Assessment for the institute.",marks:3},{stage:"S4",description:"Collaboration and partnerships are established with national/international institutes and these resources are leveraged for designing and implementing Training Needs Assessment for the institute.",marks:4},{stage:"S5",description:"Collaboration and partnerships are established with national/international institutes and these resources are leveraged for designing and implementing Training Needs Assessment for the institute as well as developing/re-designing/revising training courses.",marks:5}]},
+      { metric_no: "Metric 3", subtitle: "Are training courses offered by the institute/training directorate mapped as per Karmayogi Competency Model (KCM) for functional and behavioural competencies and domain competency?",
+        stages: [{stage:"S1",description:"Required competencies (functional, behavioural and domain) are not defined by the institute.",marks:0},{stage:"S2",description:"Required competencies (functional, behavioural and domain) are defined. The institute has mapped for <50% of training courses to the full defined set of competencies.",marks:2},{stage:"S3",description:"Required competencies (functional, behavioural and domain) are defined. The institute has mapped 50-70% of training courses to the full defined set of competencies.",marks:3},{stage:"S4",description:"Required competencies (functional, behavioural and domain) are defined based on the trainee's roles. The institute has mapped 70-90% of training courses to the full defined set of competencies.",marks:4},{stage:"S5",description:"Required competencies (functional, behavioural and domain) are defined based on the trainee's roles. The institute has mapped >90% of training courses to the full defined set of competencies.",marks:5}]},
+      { metric_no: "Metric 4", subtitle: "Does the institute/Training directorate have standard operating procedures for designing core courses in the last 2 years?",
+        stages: [{stage:"S1",description:"Standard operating procedures are not available.",marks:0},{stage:"S2",description:"Standard operating procedures are in place and followed for designing <50% of core courses.",marks:2},{stage:"S3",description:"Standard operating procedures are in place and followed for designing 50-70% of core courses.",marks:3},{stage:"S4",description:"Standard operating procedures are in place and followed for designing 70-90% of core courses.",marks:4},{stage:"S5",description:"Standard operating procedures are in place and followed for designing >90% of core courses.",marks:5}]},
+      { metric_no: "Metric 5", subtitle: "Does the institute/Training Directorate have standard operating procedures for designing in-service trainings, demand-based trainings, etc., in the last 2 years?",
+        stages: [{stage:"S1",description:"Standard operating procedures are not available.",marks:0},{stage:"S2",description:"Standard operating procedures are in place but followed for designing <50% of training courses.",marks:2},{stage:"S3",description:"Standard operating procedures are in place but followed for designing 50-70% of training courses.",marks:3},{stage:"S4",description:"Standard operating procedures are in place and followed for designing 70-90% of training courses.",marks:4},{stage:"S5",description:"Standard operating procedures are in place and followed for designing >90% of training courses.",marks:5}]}
+    ]
+  },
+  {
+    pillar_no: "Pillar 2", pillar_title: "Faculty Development",
+    num_metrics: 5, weightage: 20, max_marks: 25,
+    metrics: [
+      { metric_no: "Metric 6", subtitle: "How are full-time faculty members selected and appointed to the institute?",
+        stages: [{stage:"S1",description:"The institute has no defined process for faculty selection and appointment, as all appointments are made by the Ministry/Department/Organisation/Cadre Controlling Authority.",marks:0},{stage:"S2",description:"The institute has a defined process for faculty selection and appointment but does not follow the process.",marks:2},{stage:"S3",description:"The institute has a defined process for faculty selection and appointment. The selection process engages an internal committee for screening of the faculty. The proposed list is shared with the Ministry/Department/Organisation/Cadre Controlling Authority for approval. The final approval for faculty selection rests with the parent Ministry/Department/Organisation/Cadre Controlling Authority.",marks:3},{stage:"S4",description:"The institute has defined a process for faculty selection and appointment. The selection process engages a committee with members internal to the institute as well as from the respective parent Ministry/Department/Organisation/Cadre Controlling Authority for screening of the faculty. The final approval for faculty selection is done based on the recommendation of the committee.",marks:4},{stage:"S5",description:"The institute has defined a process for faculty selection and appointment. Selection of faculty includes a committee with members internal to the institute and from the parent Ministry/Department/Organisation/Cadre Controlling Authority for screening of the faculty. The final approval for faculty selection is done based on the recommendation of the committee. The institute conducts an annual evaluation for all faculty members.",marks:5}]},
+      { metric_no: "Metric 7", subtitle: "What are the criteria or parameters considered for selecting guest faculty in the institute?",
+        stages: [{stage:"S1",description:"There are no criteria or parameters defined while selecting guest faculty.",marks:0},{stage:"S2",description:"The institute considers only domain expertise as a parameter for selection and appointment of guest faculty.",marks:2},{stage:"S3",description:"The institute considers domain expertise and practitioner experience for the selection and appointment of guest faculty.",marks:3},{stage:"S4",description:"The institute considers multiple criteria (including domain expertise, practitioner experience, and previous training experience) for selection and appointment of guest faculty.",marks:4},{stage:"S5",description:"The institute considers multiple criteria (including domain expertise, practitioner experience, and previous training experience) for selection and appointment of guest faculty. The institute also maintains a diversity in faculty involving trainers from Ministries, Departments, academic experts, and experts from the public and private sectors.",marks:5}]},
+      { metric_no: "Metric 8", subtitle: "Do full-time faculty and visiting faculty (if applicable) members undergo a structured, pre-designed onboarding process?",
+        stages: [{stage:"S1",description:"No formal mechanism for onboarding faculty members is in place.",marks:0},{stage:"S2",description:"A formal mechanism for onboarding faculty members is in place. <30% of the faculty onboarded undergo orientation training.",marks:2},{stage:"S3",description:"A formal mechanism for onboarding faculty members is in place. 30-50% of the faculty onboarded undergo orientation training.",marks:3},{stage:"S4",description:"A formal mechanism for onboarding faculty members is in place. 50-70% of the faculty onboarded undergo orientation training.",marks:4},{stage:"S5",description:"A formal mechanism for onboarding faculty members is in place. >70% of the faculty onboarded undergo orientation training.",marks:5}]},
+      { metric_no: "Metric 9", subtitle: "To what extent have the institute's faculty participated in the Faculty Development Programs in the past 2 years?",
+        stages: [{stage:"S1",description:"All full-time faculty members in the institute have completed the Faculty Development Program on iGOT. <10% of full-time faculty have participated in the Faculty Development Programmes in the past 2 years.",marks:0},{stage:"S2",description:"All full-time faculty members in the institute have completed the Faculty Development Program on iGOT. <10% of full-time faculty have participated in the Faculty Development Programmes in the past 2 years.",marks:2},{stage:"S3",description:"All full-time faculty members in the institute have completed the Faculty Development Program on iGOT. 10-30% of full-time faculty have participated in the Faculty Development Programmes in the past 2 years.",marks:3},{stage:"S4",description:"All full-time faculty members in the institute have completed the Faculty Development Program on iGOT. 30%-50% of full-time faculty have participated in the Faculty Development Programmes in the past 2 years.",marks:4},{stage:"S5",description:"All full-time faculty members in the institute have completed the Faculty Development Program on iGOT. >50% of full-time faculty have participated in the Faculty Development Programmes in the past 2 years.",marks:5}]},
+      { metric_no: "Metric 10", subtitle: "What percentage of full-time faculty have been professionally certified on Instructional/Learning Design Methodologies within the last 5 years?",
+        stages: [{stage:"S1",description:"The institute does not have policies for encouraging professional certifications on Instructional/Learning Design Methodologies.",marks:0},{stage:"S2",description:"<10% of faculty have undertaken professional certifications on Instructional/Learning Design Methodologies.",marks:2},{stage:"S3",description:"10-30% of faculty have undertaken professional certifications on Instructional/Learning Design Methodologies.",marks:3},{stage:"S4",description:"30-50% of faculty have undertaken professional certifications on Instructional/Learning Design Methodologies.",marks:4},{stage:"S5",description:">50% of faculty have undertaken professional certifications on Instructional/Learning Design Methodologies.",marks:5}]}
+    ]
+  },
+  {
+    pillar_no: "Pillar 3", pillar_title: "Resource and Training Targets",
+    num_metrics: 6, weightage: 15, max_marks: 30,
+    metrics: [
+      { metric_no: "Metric 11", subtitle: "Does the institute conduct annual faculty resource planning for training courses?",
+        stages: [{stage:"S1",description:"The institute has no defined guidelines for resource planning to maintain adequate faculty.",marks:0},{stage:"S2",description:"The institute has defined guidelines on resource planning. The mapping is done only for full-time faculty only for core courses.",marks:2},{stage:"S3",description:"The institute has defined guidelines on resource planning. The mapping is done for full-time and visiting/guest faculty only for core courses.",marks:3},{stage:"S4",description:"The institute has defined guidelines on resource planning. The mapping is done for full-time and visiting/guest faculty only for core courses. The institute also takes faculty feedback followed by corrective measures.",marks:4},{stage:"S5",description:"The institute has defined guidelines on resource planning. The mapping is done for full-time and visiting/guest faculty for all courses. The institute also takes faculty feedback followed by corrective measures.",marks:5}]},
+      { metric_no: "Metric 12", subtitle: "Does the institute have adequate learning infrastructure (Physical and Virtual resources) to support teaching and learning?",
+        stages: [{stage:"S1",description:"The institute lacks adequate physical infrastructure, such as classrooms, a library, and technological resources.",marks:0},{stage:"S2",description:"The institute has basic infrastructure such as classrooms, a library, sports facilities, etc.",marks:2},{stage:"S3",description:"The institute has facilities for modern classrooms, such as: Smartboards, Sports facilities, Wi-Fi-enabled learning spaces, Learning Management System, Library with a hybrid (physical + digital) collection.",marks:3},{stage:"S4",description:"The institute has facilities for modern classrooms and virtual learning platforms are available and actively used.",marks:4},{stage:"S5",description:"The institute has facilities for modern classrooms, Augmented/Virtual Reality Platforms, and access to renowned national and international digital libraries.",marks:5}]},
+      { metric_no: "Metric 13", subtitle: "How does the institute monitor and evaluate the performance of its employees (teaching and non-teaching staff)?",
+        stages: [{stage:"S1",description:"The institute administration only follows the traditional Annual Performance Assessment Report (APAR) system.",marks:0},{stage:"S2",description:"Key Performance Indicators (KPIs) are defined but followed for less than 25% of the employees.",marks:2},{stage:"S3",description:"Key Performance Indicators (KPIs) are defined and followed for 25-50% of the employees.",marks:3},{stage:"S4",description:"Key Performance Indicators (KPIs) are defined and followed for 50-70% of employees.",marks:4},{stage:"S5",description:"Key Performance Indicators (KPIs) are defined and followed for more than 70% of employees.",marks:5}]},
+      { metric_no: "Metric 14", subtitle: "To what extent does the institute undertake green initiatives inside and outside the campus?",
+        stages: [{stage:"S1",description:"No/minimal green initiatives undertaken by the institute.",marks:0},{stage:"S2",description:"The institute undertakes some green initiatives through small-scale interventions like water conservation methods or solar panels etc.",marks:2},{stage:"S3",description:"The institute undertakes green initiatives through medium-scale interventions through multiple modes (more than 2 methods) such as solar panels, water conservation, waste management practices.",marks:3},{stage:"S4",description:"The institute undertakes green efforts through large-scale interventions and actively engages with NGOs and the community to implement green initiatives.",marks:4},{stage:"S5",description:"In addition to comprehensive green initiatives, the institute is certified in GRIHA/ISO:14001/ISO 50001/BEE Star Rating/IGBC Certification.",marks:5}]},
+      { metric_no: "Metric 15", subtitle: "To what extent does your institution integrate the Indic Knowledge Systems (IKS) into the training modules and pedagogy to align with the governance, administration, and ethics frameworks?",
+        stages: [{stage:"S1",description:"The institution acknowledges the importance of Indic Knowledge Systems but has not yet taken active steps toward its inclusion in courses.",marks:0},{stage:"S2",description:"The institution has introduced Indic Knowledge Systems' elements, such as case studies or guest lectures, in some courses on an ad-hoc basis.",marks:2},{stage:"S3",description:"A structured approach to Indic Knowledge Systems integration is adopted: With at least one mandatory Indic Knowledge Systems module in core courses.",marks:3},{stage:"S4",description:"The institution mandates an Indic Knowledge Systems module in core courses and promotes Indic Knowledge Systems-based research through collaborations with experts, scholars, and CSTIs.",marks:4},{stage:"S5",description:"Indic Knowledge Systems is fully institutionalised, with a dedicated Indic Knowledge Systems cell and mandatory Indic Knowledge Systems modules in long-term training.",marks:5}]},
+      { metric_no: "Metric 16", subtitle: "To what extent does your institution incorporate Indic Knowledge System (IKS) elements into its culture and daily practices, beyond formal training programs?",
+        stages: [{stage:"S1",description:"No formal policy or institutional guidelines are in place to promote Indic Knowledge Systems-based institutional culture.",marks:0},{stage:"S2",description:"Formal policy or guidelines are in place for Indic Knowledge Systems-based institutional culture, but Indic Knowledge Systems-based activities are sporadic and not regularised yet.",marks:2},{stage:"S3",description:"Formal policy is in place, and Indic Knowledge Systems-based activities are scheduled regularly. Feedback is taken on Indic Knowledge Systems activities, but no corrective measures are implemented.",marks:3},{stage:"S4",description:"Formal policy is in place, and structured Indic Knowledge Systems-based activities are undertaken regularly. Feedback is taken and corrective measures are implemented.",marks:4},{stage:"S5",description:"Mandatory Indic Knowledge Systems-based cultural components are incorporated in training programs. Institute engages in active partnerships with other institutes to advance Indic Knowledge Systems-based institutional culture.",marks:5}]}
+    ]
+  },
+  {
+    pillar_no: "Pillar 4", pillar_title: "Trainee Support",
+    num_metrics: 3, weightage: 5, max_marks: 15,
+    metrics: [
+      { metric_no: "Metric 17", subtitle: "To what extent can trainees interact with faculty during the training programme?",
+        stages: [{stage:"S1",description:"No defined/formal procedure available for trainees to interact with faculty.",marks:0},{stage:"S2",description:"The institute has guidelines for faculty-trainee interaction, which are not followed.",marks:2},{stage:"S3",description:"The institute has guidelines which are followed for faculty-trainee interaction only during the training programme.",marks:3},{stage:"S4",description:"The institute has guidelines which are followed for faculty-trainee interaction pre and during the training programme. The institute evaluates and analyzes the support extended by faculty.",marks:4},{stage:"S5",description:"The institute has guidelines which are followed for faculty-trainee interaction pre, during and post the training programme. The institute evaluates and analyses the support extended by faculty. The institute undertakes corrective measures to enhance the support to trainees.",marks:5}]},
+      { metric_no: "Metric 18", subtitle: "To what extent does the institute undertake formal mapping of mentors for trainees from the alumni/faculty/officials (for core courses/long term courses)?",
+        stages: [{stage:"S1",description:"No formal process in place for mapping mentors to trainees.",marks:0},{stage:"S2",description:"Formal process in place, mapping of mentors is not done for all trainees. No formal onboarding/communication of role expectations from either mentor/mentee is conducted.",marks:2},{stage:"S3",description:"Formal processes in place, mapping of mentors is done through defined criteria and is done for all trainees. No formal onboarding/communication of role expectations from either mentor/mentee is conducted.",marks:3},{stage:"S4",description:"Formal processes in place, mapping of mentors is done through defined criteria and is done for all trainees. The institute also conducts formal onboarding to clearly communicate the roles and responsibilities of the mentor/mentee.",marks:4},{stage:"S5",description:"Formal processes in place and mapping of mentors are done through defined criteria, for all trainees. The institute conducts formal onboarding to clearly communicate the roles and responsibilities of the mentor/mentee. The institute formally tracks the effectiveness of the mentor-mentee programme and undertakes corrective measures.",marks:5}]},
+      { metric_no: "Metric 19", subtitle: "What is the number of probationary trainee officers assigned to each mentor during the probation in the past year?",
+        stages: [{stage:"S1",description:"No mapping conducted.",marks:0},{stage:"S2",description:"1 mentor is assigned to a group of 20 to 40 mentees.",marks:2},{stage:"S3",description:"1 mentor is assigned to a group of 10 to 20 mentees.",marks:3},{stage:"S4",description:"1 mentor is assigned to a group of 10 to 5 mentees.",marks:4},{stage:"S5",description:"1 mentor is assigned to a group of 5 or less mentees.",marks:5}]}
+    ]
+  },
+  {
+    pillar_no: "Pillar 5", pillar_title: "Digitalisation and Training Delivery",
+    num_metrics: 6, weightage: 15, max_marks: 30,
+    metrics: [
+      { metric_no: "Metric 20", subtitle: "What learning channels are utilized by the training institute for training delivery?",
+        stages: [{stage:"S1",description:"Only in-person or classroom training.",marks:0},{stage:"S2",description:"The institute utilises: In-person training/field training, Live video conference.",marks:2},{stage:"S3",description:"The institute utilises: In-person training/field training, Live video conference, e-learning videos/modules.",marks:3},{stage:"S4",description:"The institute utilises: In-person training/field training, Live video conference; e-learning videos/modules, Modules hosted on iGOT.",marks:4},{stage:"S5",description:"The institute utilises: In-person training/field training, Live video conference, e-learning videos/modules, Modules hosted on iGOT, Virtual immersive learning lab.",marks:5}]},
+      { metric_no: "Metric 21", subtitle: "What range of learning methods are used by the institute for training delivery?",
+        stages: [{stage:"S1",description:"Only instructor-led presentation.",marks:0},{stage:"S2",description:"Range of learning methods: Instructor-led presentations, Assigned readings, Case studies.",marks:2},{stage:"S3",description:"Range of learning methods: Instructor-led sessions, Assigned readings, Case studies; Peer-based activities, Co-curricular and extra-curricular activities.",marks:3},{stage:"S4",description:"Range of learning methods: Instructor-led sessions, Assigned readings, Case studies, Peer-based activities, Co-curricular and extra-curricular activities, Partnerships with governmental/non-governmental/private sector/academia.",marks:4},{stage:"S5",description:"Range of learning methods: Instructor-led sessions, Assigned readings, Case studies, Peer-based activities, Co-curricular and extra-curricular activities, Partnerships with governmental/non-governmental/private sector/academia and international organisations.",marks:5}]},
+      { metric_no: "Metric 22", subtitle: "What are the channels available for interaction among trainees and faculty?",
+        stages: [{stage:"S1",description:"Not Available.",marks:0},{stage:"S2",description:"Only one channel available (Emails, informal communication channels, dedicated websites/chat-rooms, or formal virtual/in-person interaction).",marks:2},{stage:"S3",description:"Only two of the channel options are available.",marks:3},{stage:"S4",description:"Only three of the channel options are available.",marks:4},{stage:"S5",description:"All four channels are available.",marks:5}]},
+      { metric_no: "Metric 23", subtitle: "What capacity does the Institute have for converting offline (physical) content to online (digital) content?",
+        stages: [{stage:"S1",description:"The Institute does not host online (digital) content.",marks:0},{stage:"S2",description:"The institute currently outsources the conversion of offline content or creation of digital content to third-party providers.",marks:2},{stage:"S3",description:"The institute currently designs the conversion of offline content or creation of digital content in-house but delegates the digitalisation of such content to third-party providers.",marks:3},{stage:"S4",description:"The institute has the in-house capability to convert existing offline content into a hybrid format (online+offline) and design and develop new content. All digital content conversion follows the Course Evaluation Matrix developed by Capacity Building Commission.",marks:4},{stage:"S5",description:"The institute has the in-house capability to convert existing offline content into a hybrid format and helps in creating courses for other institutes.",marks:5}]},
+      { metric_no: "Metric 24", subtitle: "How many hours of Institute's courses are digitalized and uploaded on iGOT?",
+        stages: [{stage:"S1",description:"The institute has not uploaded any content on iGOT.",marks:0},{stage:"S2",description:"5-15 hours of training content are digitalized and uploaded on iGOT.",marks:2},{stage:"S3",description:"15-25 hours of training content are digitalized and uploaded on iGOT and have a 4-star rating or above.",marks:3},{stage:"S4",description:"25-50 hours of training content are digitalized and uploaded on iGOT and have a 4-star rating or above.",marks:4},{stage:"S5",description:">=50 hours of training content are digitalized and uploaded on iGOT and have a 4-star rating or above.",marks:5}]},
+      { metric_no: "Metric 25", subtitle: "What percentage of the institute's courses are hybrid? (iGOT/Learning Management System - online + offline)",
+        stages: [{stage:"S1",description:"The institute does not have any hybrid courses.",marks:0},{stage:"S2",description:"<50% of the training courses are hybrid.",marks:2},{stage:"S3",description:"50-70% of the training courses are hybrid.",marks:3},{stage:"S4",description:"70-90% of the training courses are hybrid.",marks:4},{stage:"S5",description:">90% of the training courses are hybrid.",marks:5}]}
+    ]
+  },
+  {
+    pillar_no: "Pillar 6", pillar_title: "Collaboration",
+    num_metrics: 5, weightage: 15, max_marks: 25,
+    metrics: [
+      { metric_no: "Metric 26", subtitle: "What percentage of faculty members' total training hours are spent at other institutes to deliver courses/course modules?",
+        stages: [{stage:"S1",description:"<5% of the total training hours of the faculty.",marks:0},{stage:"S2",description:"5-10% of the total training hours of the faculty.",marks:2},{stage:"S3",description:"10-15% of the total training hours of the faculty.",marks:3},{stage:"S4",description:"15-20% of the total training hours of the faculty.",marks:4},{stage:"S5",description:">20% of the total training hours of the faculty.",marks:5}]},
+      { metric_no: "Metric 27", subtitle: "To what extent has the institute leveraged faculty/subject matter experts/practitioners from other institutes/organisations/universities to deliver training in the past 2 years?",
+        stages: [{stage:"S1",description:"<5% of the total training courses.",marks:0},{stage:"S2",description:"5-10% of the total training courses.",marks:2},{stage:"S3",description:"10-15% of the total training courses.",marks:3},{stage:"S4",description:"15-20% of the total training courses.",marks:4},{stage:"S5",description:">20% of the total training courses.",marks:5}]},
+      { metric_no: "Metric 28", subtitle: "To what extent has the institute contributed courses/course material to other training institutions/Universities/Amrit Gyaan Kosh in the last 2 years?",
+        stages: [{stage:"S1",description:"The institute has contributed courses/course material to <=5 training institutes/universities/Amrit Gyaan Kosh.",marks:0},{stage:"S2",description:"The institute has contributed courses/course material to 6-10 training institutes/universities/Amrit Gyaan Kosh.",marks:2},{stage:"S3",description:"The institute has contributed courses/course material to 11-15 training institutes/universities/Amrit Gyaan Kosh.",marks:3},{stage:"S4",description:"The institute has contributed courses/course material to 16-20 training institutes/universities/Amrit Gyaan Kosh.",marks:4},{stage:"S5",description:"The institute has contributed courses/course material to >20 training institutes/universities/Amrit Gyaan Kosh.",marks:5}]},
+      { metric_no: "Metric 29", subtitle: "To what extent does the institute leverage course/course material from other training institutions/Universities/Amrit Gyaan Kosh in the last 2 years?",
+        stages: [{stage:"S1",description:"The institute has leveraged courses/course material from <=5 training institutes/universities/Amrit Gyaan Kosh.",marks:0},{stage:"S2",description:"The institute has leveraged courses/course material from 6-10 training institutes/universities/Amrit Gyaan Kosh.",marks:2},{stage:"S3",description:"The institute has leveraged courses/course material from 11-15 training institutes/universities/Amrit Gyaan Kosh.",marks:3},{stage:"S4",description:"The institute has leveraged courses/course material from 16-20 training institutes/universities/Amrit Gyaan Kosh.",marks:4},{stage:"S5",description:"The institute has leveraged courses/course material from >20 training institutes/universities/Amrit Gyaan Kosh.",marks:5}]},
+      { metric_no: "Metric 30", subtitle: "To what extent has the institute conducted and participated in networking events in the past 2 years?",
+        stages: [{stage:"S1",description:"The institute has not conducted or participated in any networking events in the last 2 years.",marks:0},{stage:"S2",description:"The institute has not conducted or organized any events but has participated in networking events organized by other institutes.",marks:2},{stage:"S3",description:"The institute has organized occasional networking events and participated in similar events organized by other training institutes in the last 2 years.",marks:3},{stage:"S4",description:"The institute regularly organizes and participates in workshops and networking events which also have participation from prominent academic institutions or engage industry experts/non-governmental entities.",marks:4},{stage:"S5",description:"The institute regularly organizes and participates in workshops and networking events. The institute participates and/or hosts international networking events.",marks:5}]}
+    ]
+  },
+  {
+    pillar_no: "Pillar 7", pillar_title: "Training Evaluation and Quality Assurance",
+    num_metrics: 5, weightage: 10, max_marks: 25,
+    metrics: [
+      { metric_no: "Metric 31", subtitle: "To what extent does the institute have well-defined procedures for updating training courses?",
+        stages: [{stage:"S1",description:"The institute has no standard operating processes for updating training courses.",marks:0},{stage:"S2",description:"The institute has well defined procedures for updating core training courses, but these are not followed.",marks:2},{stage:"S3",description:"The institute has well defined procedures for updating core training courses on an as-needed basis.",marks:3},{stage:"S4",description:"The institute has well defined procedures for updating and revising core training courses followed periodically.",marks:4},{stage:"S5",description:"The institute has well defined procedures for updating and revising all training courses followed periodically.",marks:5}]},
+      { metric_no: "Metric 32", subtitle: "How does the institute measure training and learning effectiveness through engagement with concerned stakeholders (trainees, demand side agencies, etc.)?",
+        stages: [{stage:"S1",description:"No defined guidelines to engage multiple stakeholders for evaluating the training and learning effectiveness of training courses.",marks:0},{stage:"S2",description:"There are defined guidelines to engage multiple stakeholders for evaluating the training and learning effectiveness of core training courses, but it is not followed.",marks:2},{stage:"S3",description:"The institute has defined guidelines to engage multiple stakeholders for evaluating the training and learning effectiveness of core training courses and periodically follows it.",marks:3},{stage:"S4",description:"The institute has defined guidelines to engage multiple stakeholders for evaluating training and learning effectiveness of core training courses and periodically follows it. The institute employs several modes of collecting feedback at various stages of training courses.",marks:4},{stage:"S5",description:"The institute has defined guidelines to engage multiple stakeholders for evaluating the training and learning effectiveness of core training courses and periodically follows it. The institute analyses the evidence/data collected and clearly defines action items to address the areas of concern.",marks:5}]},
+      { metric_no: "Metric 33", subtitle: "To what extent does the institute have defined learning outcomes for its training courses?",
+        stages: [{stage:"S1",description:"The institute has not defined learning outcomes for any of its courses.",marks:0},{stage:"S2",description:"The institute has defined the learning outcomes for <50% of all the training courses offered.",marks:2},{stage:"S3",description:"The institute has defined the learning outcomes for 50-70% of all training courses offered.",marks:3},{stage:"S4",description:"The institute has defined the learning outcomes for 70-90% of all training courses offered.",marks:4},{stage:"S5",description:"The institute has defined the learning outcomes for >90% of all training courses offered.",marks:5}]},
+      { metric_no: "Metric 34", subtitle: "To what extent does the institute track learner progression throughout training programmes through interventions?",
+        stages: [{stage:"S1",description:"No interventions are undertaken to track learner progression for training programmes in the institute.",marks:0},{stage:"S2",description:"Institute tracks learner progression through specific Interventions only during the training programs for all core courses.",marks:2},{stage:"S3",description:"Institute tracks learner progression through specific interventions before and during training programs for all core courses. No corrective measures are undertaken.",marks:3},{stage:"S4",description:"Institute tracks learner progression through specific interventions before and during training programs for all core courses. The institute undertakes corrective measures to enhance teaching and learning.",marks:4},{stage:"S5",description:"Institute tracks learner progression through specific interventions before, during and after training programs and follows for all core courses. The institute undertakes corrective measures to enhance teaching and learning.",marks:5}]},
+      { metric_no: "Metric 35", subtitle: "To what extent does the institute leverage external faculty/experts for evaluating trainees?",
+        stages: [{stage:"S1",description:"Evaluation tests are not conducted for trainees in the institute.",marks:0},{stage:"S2",description:"Trainees are evaluated only by the institute faculty.",marks:2},{stage:"S3",description:"Trainees are evaluated across multiple stages of the training by multiple evaluators which include internal examiners from the institute and external examiners from other institutes.",marks:3},{stage:"S4",description:"Trainees are evaluated across multiple stages of the training by multiple evaluators which include internal examiners, external examiners from other institutes and experts from relevant industry/non-government organizations/multilateral agencies.",marks:4},{stage:"S5",description:"Trainees are evaluated across multiple stages by multiple evaluators selected based on their subject matter expertise. Evaluators include internal examiners, external examiners, and industry experts. The assessments are complemented by feedback from the supervisors and subordinates of the trainees and self-evaluation by the trainee.",marks:5}]}
+    ]
+  },
+  {
+    pillar_no: "Pillar 8", pillar_title: "Governance and Operation",
+    num_metrics: 8, weightage: 10, max_marks: 40,
+    metrics: [
+      { metric_no: "Metric 36", subtitle: "The institute has the autonomy to make decisions regarding the allocation of funds.",
+        stages: [{stage:"S1",description:"The institute can identify needs but must get approval for all fund allocation.",marks:0},{stage:"S2",description:"The institute can allocate funds to a few areas (less than 50%) but needs approval for the rest.",marks:2},{stage:"S3",description:"The institute can allocate funds to some areas (50-70%) but needs approval for the rest.",marks:3},{stage:"S4",description:"The institute can allocate funds to most areas (70-90%) but needs approval for the rest.",marks:4},{stage:"S5",description:"The institute has the autonomy to allocate funds as it deems fit. The institute can disburse funds to most areas (>90%).",marks:5}]},
+      { metric_no: "Metric 37", subtitle: "To what extent does the institute conduct budget planning and utilization of training programmes in the last 2 years?",
+        stages: [{stage:"S1",description:"The institute utilizes <50% of the budget allocated to the training programs.",marks:0},{stage:"S2",description:"The institute utilizes 50-70% of the budget allocated to the training programs.",marks:2},{stage:"S3",description:"The institute utilizes 70-90% of the budget allocated to the training programs.",marks:3},{stage:"S4",description:"The institute utilizes >90% of the budget allocated to the training programs.",marks:4},{stage:"S5",description:"The institute utilizes >90% of the budget allocated to the training programs. The institute conducts analysis and undertakes corrective measures.",marks:5}]},
+      { metric_no: "Metric 38", subtitle: "How is staff strength determined and managed at your institute?",
+        stages: [{stage:"S1",description:"Sanctioned strength is determined without any guidelines.",marks:0},{stage:"S2",description:"Sanctioned strength is determined as per guidelines without any defined periodicity.",marks:2},{stage:"S3",description:"Sanctioned strength is determined as per guidelines with defined periodicity but the required number of posts are not sanctioned.",marks:3},{stage:"S4",description:"Sanctioned strength is determined as per guidelines, required posts are sanctioned but not regularly filled.",marks:4},{stage:"S5",description:"Sanctioned strength is determined as per guidelines, required posts are sanctioned and full strength is maintained.",marks:5}]},
+      { metric_no: "Metric 39", subtitle: "The institute has the autonomy to generate revenue from sources other than the parent Ministry/Department/Organisation and retain/use the surplus at its discretion.",
+        stages: [{stage:"S1",description:"The institute does not have the autonomy to generate revenue at its discretion.",marks:0},{stage:"S2",description:"The institute can take up activities for generating revenue from sources other than the parent Ministry/Department/Organisation, but cannot retain/use the surplus at its own discretion.",marks:2},{stage:"S3",description:"The institute has the autonomy to take up activities for generating revenue from sources other than the parent Ministry/Department/Organisation with approval, but can retain/use some portion of the surplus at its own discretion.",marks:3},{stage:"S4",description:"The institute has the autonomy to take up activities for generating 10%-25% revenue from sources other than the parent Ministry/Department/Organisation and can retain/use the entire surplus with approval.",marks:4},{stage:"S5",description:"The institute has the autonomy to take up activities generating >25% revenue from sources other than the parent Ministry/Department/Organisation and can retain/use the surplus at its own discretion.",marks:5}]},
+      { metric_no: "Metric 40", subtitle: "The institute has the autonomy to set and amend its own internal procedures for operations as well as training.",
+        stages: [{stage:"S1",description:"The institute has pre-established rules for internal training operations that it cannot amend.",marks:0},{stage:"S2",description:"The institute can amend some of the pre-established rules for internal training operations with permission but cannot create its own rules.",marks:2},{stage:"S3",description:"The institute can amend some of the pre-established rules and create its own policies for internal training operations with permission.",marks:3},{stage:"S4",description:"The institute can amend pre-established rules on internal training operations, but it does need permission to create its own rules.",marks:4},{stage:"S5",description:"The institute has full autonomy to amend any pre-established rules on internal training operations, and can also create its own policies.",marks:5}]},
+      { metric_no: "Metric 41", subtitle: "To what extent does the institute maintain and utilize data on the training programmes conducted?",
+        stages: [{stage:"S1",description:"The institute maintains all records and information offline/physically.",marks:0},{stage:"S2",description:"The institute maintains some records on digital databases but uses ad hoc systems (such as Microsoft Excel, Google Sheets, etc.).",marks:2},{stage:"S3",description:"The institute maintains some records on digital databases using a single data-sharing platform.",marks:3},{stage:"S4",description:"The institute maintains all records on digital databases using a single data-sharing platform but data updation and maintenance are lagged and not done in real-time.",marks:4},{stage:"S5",description:"The institute maintains all internal records on digital databases using a single data-sharing platform, and data updation and maintenance are done regularly and in real-time.",marks:5}]},
+      { metric_no: "Metric 42", subtitle: "Does the institute have robust mechanisms for timely and regular sharing of information between stakeholders (Ministry/Department/Organisation)?",
+        stages: [{stage:"S1",description:"The institute does not share information with its stakeholders.",marks:0},{stage:"S2",description:"The institute shares internal information with stakeholders, but no formal guidelines are in place to regulate the process.",marks:2},{stage:"S3",description:"The institute has formal guidelines in place for regular exchange of information between stakeholders, but these are not routinely followed.",marks:3},{stage:"S4",description:"The institute has formal guidelines in place for the regular exchange of information between stakeholders, and these are routinely followed.",marks:4},{stage:"S5",description:"The institute has formal guidelines in place for the regular exchange of information between stakeholders, which are routinely followed. This information is actively used to make changes or improvements to the Institute as needed.",marks:5}]},
+      { metric_no: "Metric 43", subtitle: "To what extent does the institute engage with the local/regional community in hiring non-teaching staff for non-specialized positions?",
+        stages: [{stage:"S1",description:"No formal engagement with the local community for hiring non-teaching staff/non-specialisation posts.",marks:0},{stage:"S2",description:"Some non-teaching staff are hired from the local community, but no defined policy exists.",marks:2},{stage:"S3",description:"A policy exists for employing non-teaching staff from the local community. The institute employs <50% of its non-teaching training staff from the local community.",marks:3},{stage:"S4",description:"A structured mechanism ensures the employment of non-teaching staff from the local community. The institute employs 50%-70% of its non-teaching training staff from the local community.",marks:4},{stage:"S5",description:"The institute actively prioritizes hiring local non-teaching staff and collaborates with local employment agencies. The institute employs >70% of its non-teaching training staff from the local community.",marks:5}]}
+    ]
+  }
+];
+
+// total metrics across all pillars
+const TOTAL_METRICS = PILLARS.reduce(function(acc, p) { return acc + p.metrics.length; }, 0);
+
+// answers store: key = "pillarIdx_metricIdx", value = marks number
+var answers = {};
+
+// current position
+var curPillar = 0;
+var curMetric = 0;
+
+// ---- BUILD WELCOME PILLS (element was removed, guard against null) ----
+(function buildWelcomePills() {
+  var c = document.getElementById('welcome-pills');
+  if (!c) return;
+  PILLARS.forEach(function(p, i) {
+    var span = document.createElement('span');
+    span.className = 'pillar-pill' + (i % 2 === 1 ? ' odd' : '');
+    span.textContent = p.pillar_no + ' (' + p.weightage + '%)';
+    c.appendChild(span);
+  });
+})();
+
+// ---- START SURVEY ----
+function startSurvey() {
+  curPillar = 0;
+  curMetric = 0;
+  buildSidebar();
+  renderQuestion();
+  showScreen('screen-survey');
+}
+
+// ---- BUILD SIDEBAR ----
+function buildSidebar() {
+  var c = document.getElementById('sidebar-items');
+  c.innerHTML = '';
+  PILLARS.forEach(function(p, i) {
+    var div = document.createElement('div');
+    div.className = 'sidebar-item' + (i === 0 ? ' active' : '');
+    div.id = 'si-' + i;
+    div.innerHTML =
+      '<div class="si-num">' + (i + 1) + '</div>' +
+      '<div>' +
+        '<div class="si-name">' + p.pillar_title + '</div>' +
+        '<div class="si-count">' + p.metrics.length + ' metrics</div>' +
+      '</div>';
+    div.addEventListener('click', function() { goToPillar(i); });
+    c.appendChild(div);
+  });
+}
+
+// ---- GO TO PILLAR (sidebar click) ----
+function goToPillar(pIdx) {
+  curPillar = pIdx;
+  curMetric = 0;
+  renderQuestion();
+  updateSidebar();
+  var sm = document.getElementById('survey-main');
+  if (sm) sm.scrollTop = 0;
+}
+
+// ---- UPDATE SIDEBAR STATE ----
+function updateSidebar() {
+  // update each sidebar item class
+  PILLARS.forEach(function(p, i) {
+    var el = document.getElementById('si-' + i);
+    if (!el) return;
+    el.className = 'sidebar-item';
+    if (i === curPillar) el.classList.add('active');
+    // check if all metrics in this pillar are answered
+    var allDone = p.metrics.every(function(m, mi) {
+      return answers[i + '_' + mi] !== undefined;
+    });
+    if (allDone && i !== curPillar) el.classList.add('done');
+  });
+
+  // count answered metrics
+  var answered = Object.keys(answers).length;
+  var pct = Math.round(answered / TOTAL_METRICS * 100);
+
+  var fill = document.getElementById('sb-fill');
+  var text = document.getElementById('sb-text');
+  var pctNum = document.getElementById('sb-pct-num');
+  if (fill) fill.style.width = pct + '%';
+  if (text) text.textContent = answered + ' of ' + TOTAL_METRICS + ' answered';
+  if (pctNum) pctNum.textContent = pct;
+}
+
+// ---- RENDER THE CURRENT QUESTION ----
+function renderQuestion() {
+  var pillar = PILLARS[curPillar];
+  var metric = pillar.metrics[curMetric];
+  var answerKey = curPillar + '_' + curMetric;
+
+  // update pillar banner
+  var bannerWrap = document.getElementById('pillar-banner-wrap');
+  bannerWrap.innerHTML =
+    '<div class="pillar-banner">' +
+      '<span class="pillar-no-pill">' + pillar.pillar_no + '</span>' +
+      '<h3>' + pillar.pillar_title + '</h3>' +
+      '<span class="pillar-wt-pill">Weightage: ' + pillar.weightage + '%</span>' +
+    '</div>';
+
+  // build question card HTML
+  var html =
+    '<div class="q-card' + (answers[answerKey] !== undefined ? ' answered' : '') + '" id="q-card">' +
+      '<div class="q-meta">' +
+        '<span class="q-counter-badge">Metric ' + (curMetric + 1) + ' of ' + pillar.metrics.length + '</span>' +
+      '</div>' +
+      '<div class="q-subtitle">' + metric.subtitle + '</div>' +
+      '<div class="stage-options">';
+
+  // render each stage as a radio option
+  metric.stages.forEach(function(s, si) {
+    var radioId = 'stage_' + curPillar + '_' + curMetric + '_' + si;
+    var isChecked = answers[answerKey] === s.marks ? 'checked' : '';
+    html +=
+      '<input type="radio" name="metric_answer" id="' + radioId + '" value="' + s.marks + '" ' + isChecked +
+        ' onchange="recordAnswer(' + s.marks + ')">' +
+      '<label class="stage-label" for="' + radioId + '">' +
+        '<span class="radio-circle"><span class="radio-dot"></span></span>' +
+        '<span class="stage-tag">' + s.stage + '</span>' +
+        '<span>' + s.description + '</span>' +
+      '</label>';
+  });
+
+  html += '</div></div>';
+
+  // inject with fade
+  var wrap = document.getElementById('questions-wrap');
+  wrap.style.opacity = '0';
+  setTimeout(function() {
+    wrap.innerHTML = html;
+    wrap.style.transition = 'opacity 0.2s ease';
+    wrap.style.opacity = '1';
+  }, 150);
+
+  // update dots
+  updateDots();
+
+  // update prev/next buttons
+  var isFirst = (curPillar === 0 && curMetric === 0);
+  var isLast  = (curPillar === PILLARS.length - 1 && curMetric === PILLARS[curPillar].metrics.length - 1);
+  var btnP = document.getElementById('btn-prev');
+  var btnN = document.getElementById('btn-next');
+  if (btnP) btnP.style.visibility = isFirst ? 'hidden' : 'visible';
+  if (btnN) btnN.textContent = isLast ? 'View Results' : 'Next';
+
+  // hide warning
+  var wb = document.getElementById('warn-bar');
+  if (wb) wb.style.display = 'none';
+
+  updateSidebar();
+}
+
+// ---- RECORD ANSWER AND AUTO-ADVANCE ----
+function recordAnswer(marks) {
+  var key = curPillar + '_' + curMetric;
+  answers[key] = marks;
+
+  // mark card as answered
+  var card = document.getElementById('q-card');
+  if (card) card.classList.add('answered');
+
+  updateSidebar();
+  updateDots();
+
+  // auto-advance after short delay
+  setTimeout(function() { nextQ(); }, 400);
+}
+
+// ---- NEXT QUESTION ----
+function nextQ() {
+  var key = curPillar + '_' + curMetric;
+
+  // require answer before advancing
+  if (answers[key] === undefined) {
+    var wb = document.getElementById('warn-bar');
+    if (wb) { wb.style.display = 'block'; }
+    return;
+  }
+
+  var pillar = PILLARS[curPillar];
+
+  // go to next metric in this pillar
+  if (curMetric < pillar.metrics.length - 1) {
+    curMetric++;
+    renderQuestion();
+  } else if (curPillar < PILLARS.length - 1) {
+    // advance to next pillar
+    curPillar++;
+    curMetric = 0;
+    renderQuestion();
+  } else {
+    // all done: show results
+    showResults();
+  }
+
+  var sm = document.getElementById('survey-main');
+  if (sm) sm.scrollTop = 0;
+}
+
+// ---- PREVIOUS QUESTION ----
+function prevQ() {
+  var wb = document.getElementById('warn-bar');
+  if (wb) wb.style.display = 'none';
+
+  if (curMetric > 0) {
+    curMetric--;
+    renderQuestion();
+  } else if (curPillar > 0) {
+    curPillar--;
+    curMetric = PILLARS[curPillar].metrics.length - 1;
+    renderQuestion();
+  }
+
+  var sm = document.getElementById('survey-main');
+  if (sm) sm.scrollTop = 0;
+}
+
+// ---- UPDATE DOTS ----
+function updateDots() {
+  var dc = document.getElementById('dots-row');
+  if (!dc) return;
+  var pillar = PILLARS[curPillar];
+  var html = '';
+  pillar.metrics.forEach(function(m, i) {
+    var key = curPillar + '_' + i;
+    var cls = 'cdot';
+    if (answers[key] !== undefined) cls += ' cdot-done';
+    if (i === curMetric) cls += ' cdot-current';
+    html += '<span class="' + cls + '"></span>';
+  });
+  dc.innerHTML = html;
+}
+
+// ---- SHOW RESULTS ----
+function showResults() {
+  showScreen('screen-results');
+
+  // compute pillar scores
+  var pillarResults = PILLARS.map(function(p, pi) {
+    var scored = 0;
+    var maxPossible = 0;
+    p.metrics.forEach(function(m, mi) {
+      var key = pi + '_' + mi;
+      var ans = answers[key];
+      if (ans !== undefined) scored += ans;
+      maxPossible += 5;
+    });
+    var pct = maxPossible > 0 ? Math.round(scored / maxPossible * 100) : 0;
+    return { pillar: p, scored: scored, maxPossible: maxPossible, pct: pct };
+  });
+
+  // weighted overall score
+  var overallPct = pillarResults.reduce(function(acc, r) {
+    return acc + (r.pct * r.pillar.weightage / 100);
+  }, 0);
+  overallPct = Math.round(overallPct);
+
+  // overall card: number and % same size, label "Overall Score", no maturity badge
+  var overallCard = document.getElementById('overall-card');
+  overallCard.innerHTML =
+    '<div>' +
+      '<div class="overall-score-num">' + overallPct + '<span>%</span></div>' +
+    '</div>' +
+    '<div class="overall-score-info">' +
+      '<h3>Overall Score</h3>' +
+    '</div>';
+
+  // pillar grid: percentage only, no fraction, no metric count, no colour coding
+  var grid = document.getElementById('pillar-grid');
+  grid.innerHTML = '';
+  pillarResults.forEach(function(r) {
+    var card = document.createElement('div');
+    card.className = 'pillar-score-card';
+    card.innerHTML =
+      '<div class="psc-top">' +
+        '<div class="psc-pills">' +
+          '<span class="psc-no-pill">' + r.pillar.pillar_no + '</span>' +
+          '<span class="psc-wt-pill">Weight: ' + r.pillar.weightage + '%</span>' +
+        '</div>' +
+        '<div class="psc-score-num">' + r.pct + '<span class="psc-denom">%</span></div>' +
+      '</div>' +
+      '<div class="psc-name">' + r.pillar.pillar_title + '</div>' +
+      '<div class="psc-bar-track"><div class="psc-bar-fill" style="width:' + r.pct + '%;"></div></div>';
+    grid.appendChild(card);
+  });
+
+  drawRadar(pillarResults);
+}
+
+// ---- DRAW RADAR CHART: single neutral colour, no colour coding ----
+function drawRadar(pillarResults) {
+  var labels = pillarResults.map(function(r) { return 'P' + (PILLARS.indexOf(r.pillar) + 1); });
+  var data   = pillarResults.map(function(r) { return r.pct; });
+
+  var ctx = document.getElementById('radar-chart').getContext('2d');
+  if (window._radarChart) window._radarChart.destroy();
+
+  window._radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Score (%)',
+        data: data,
+        backgroundColor: 'rgba(43,94,150,0.12)',
+        borderColor: '#2B5E96',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#2B5E96',
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        r: {
+          min: 0, max: 100,
+          ticks: { stepSize: 20, font: { size: 11 }, color: '#7A8D9E',
+            callback: function(v) { return v + '%'; } },
+          pointLabels: { font: { size: 13, weight: '700' }, color: '#1C2B3A' },
+          grid: { color: 'rgba(0,0,0,0.08)' },
+          angleLines: { color: 'rgba(0,0,0,0.08)' }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              var pi = ctx.dataIndex;
+              return PILLARS[pi].pillar_title + ': ' + ctx.raw + '%';
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// ---- RESTART ----
+function restartSurvey() {
+  answers = {};
+  curPillar = 0;
+  curMetric = 0;
+  showScreen('screen-welcome');
+}
+
+// ---- SCREEN SWITCHER ----
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
