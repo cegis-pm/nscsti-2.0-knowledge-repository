@@ -626,16 +626,111 @@
     }
 
     
-    @media (max-width: 900px) {
+    /* ---- RESPONSIVE ---- */
+
+    /* Tablet: 768px - 1024px */
+    @media (max-width: 1024px) {
       .pillars-grid { grid-template-columns: repeat(2, 1fr); }
-      footer { grid-template-columns: 1fr; gap: 24px; }
-      .hero { padding: 70px 30px 60px; }
-      .nav { padding: 0 20px; }
+      .hero { padding: 70px 40px 60px; }
+      .pillars-section { padding: 50px 30px; }
+      .repo-main { padding: 30px; }
     }
 
+    /* Large mobile / small tablet: 600px - 768px */
+    @media (max-width: 768px) {
+      /* Nav: shrink brand, hide some links */
+      .nav { padding: 0 20px; }
+      .nav-brand-text { font-size: 18px; }
+      .nav-links a { padding: 6px 10px; font-size: 13px; }
+
+      /* Hero */
+      .hero { padding: 60px 24px 50px; }
+      .hero h1 { font-size: clamp(22px, 5vw, 36px); }
+      .hero-sub { font-size: 16px; }
+      .hero-stats { gap: 24px; flex-wrap: wrap; }
+
+      /* Pillars grid */
+      .pillars-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .pillars-section { padding: 40px 20px; }
+      .section-title { font-size: 26px; }
+      .section-sub { font-size: 15px; margin-bottom: 30px; }
+
+      /* Repository layout: stack sidebar on top */
+      .repo-layout { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        min-width: unset;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 10px 0;
+        gap: 0;
+      }
+      .sidebar-title { display: none; }
+      .sidebar-item {
+        padding: 8px 14px;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .sidebar-item.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--blue-mid);
+      }
+      .sidebar-num { display: none; }
+      .sidebar-label { font-size: 13px; }
+      .repo-main { max-width: 100%; padding: 20px; }
+
+      /* Footer */
+      footer { grid-template-columns: 1fr; gap: 20px; padding: 30px 24px; }
+    }
+
+    /* Mobile: up to 600px */
     @media (max-width: 600px) {
-      .pillars-grid { grid-template-columns: 1fr; }
-      .repo-main { padding: 20px; }
+      /* Nav: hide nav links text, keep brand */
+      .nav-links a { padding: 6px 8px; font-size: 12px; letter-spacing: 0; }
+
+      /* Hero */
+      .hero { padding: 50px 18px 40px; }
+      .hero h1 { font-size: clamp(20px, 6vw, 30px); }
+      .hero-sub { font-size: 15px; margin-bottom: 24px; }
+      .hero-stats { gap: 18px; margin-top: 30px; }
+      .stat-num { font-size: 28px; }
+
+      /* Pillars */
+      .pillars-grid { grid-template-columns: 1fr; gap: 12px; }
+      .pillars-section { padding: 30px 16px; }
+      .section-title { font-size: 22px; }
+      .pillar-card { padding: 20px 18px; }
+
+      /* Repo */
+      .repo-main { padding: 16px; }
+      .pillar-header h2 { font-size: 22px; }
+      .metric-head { padding: 14px 16px; }
+      .metric-body { padding: 0 16px 16px; }
+      .doc-item { padding: 12px 12px; }
+      .stage-btn { font-size: 11px; padding: 8px 4px; }
+
+      /* Submit dialog */
+      #submit-dialog > div { padding: 24px 20px; }
+
+      /* About section */
+      .about-section { padding: 40px 18px; }
+    }
+
+    /* Very small mobile: up to 380px */
+    @media (max-width: 380px) {
+      .nav-brand-text { font-size: 16px; }
+      .nav-links a { font-size: 11px; padding: 5px 6px; }
+      .hero { padding: 40px 14px 34px; }
+      .pillars-section { padding: 24px 12px; }
     }
   </style>
 </head>
@@ -652,6 +747,7 @@
       <!-- Each link calls showPage() with the page ID -->
       <li><a href="#" onclick="showPage('home'); return false;" id="link-home" class="active">Home</a></li>
       <li><a href="#" onclick="showPage('repo'); return false;" id="link-repo">Repository</a></li>
+      <li><a href="survey.html">Self-Assessment</a></li>
     </ul>
   </nav>
 

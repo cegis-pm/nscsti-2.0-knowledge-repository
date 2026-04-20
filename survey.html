@@ -98,7 +98,7 @@
     margin: 0 auto;
   }
   .welcome-inner h1 {
-    font-size: clamp(28px, 4vw, 48px);
+    font-size: clamp(24px, 4vw, 48px);
     color: white;
     margin-bottom: 20px;
     line-height: 1.15;
@@ -361,13 +361,7 @@
   }
 
   /* dots progress under card */
-  .dots-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px 32px 6px; }
-  .cdot {
-    width: 9px; height: 9px; border-radius: 50%;
-    background: var(--border); transition: all 0.2s; flex-shrink: 0;
-  }
-  .cdot-done    { background: var(--green); }
-  .cdot-current { background: var(--blue-mid); transform: scale(1.4); }
+
 
   /* warning banner */
   .warn-bar {
@@ -403,14 +397,6 @@
     border-radius: 12px;
     padding: 30px 36px;
     margin-bottom: 28px;
-    position: relative;
-    overflow: hidden;
-  }
-  .results-hero::after {
-    content: '';
-    position: absolute; top: -40px; right: -40px;
-    width: 200px; height: 200px; border-radius: 50%;
-    background: rgba(255,255,255,0.05);
   }
   .results-hero h2 { font-size: 22px; font-weight: 800; color: white; letter-spacing: 0.05em; text-transform: uppercase; }
   .results-hero p  { color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 6px; }
@@ -494,13 +480,34 @@
   .star-off { color: #C8C8C8; }
 
   /* ---- RESPONSIVE ---- */
+
+  /* Tablet: 768px - 1024px */
+  @media (max-width: 1024px) {
+    .welcome-body { padding: 70px 40px 60px; }
+    .pillar-grid { grid-template-columns: 1fr 1fr; }
+    .results-body { padding: 30px; }
+  }
+
+  /* Small tablet / large mobile: up to 768px */
   @media (max-width: 768px) {
-    #screen-survey { flex-direction: column; overflow-y: auto; height: auto; }
+    /* Nav */
+    .nav { padding: 0 20px; }
+    .nav-brand-text { font-size: 18px; }
+    .nav-links a { padding: 6px 10px; font-size: 13px; }
+
+    /* Welcome */
+    .welcome-body { padding: 50px 24px 50px; }
+    .welcome-inner p { font-size: 16px; }
+    .stats-row { gap: 24px; }
+    .stat-num { font-size: 28px; }
+
+    /* Survey: stack sidebar above main */
+    #screen-survey { flex-direction: column; height: auto; overflow-y: auto; }
     .survey-sidebar {
       width: 100%; height: auto; flex-direction: row;
+      flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden;
       border-right: none; border-bottom: 1px solid var(--border);
-      overflow-x: auto; overflow-y: hidden; padding: 10px 14px;
-      gap: 8px;
+      padding: 8px 12px; gap: 4px;
     }
     .sidebar-head { display: none; }
     .sidebar-item {
@@ -508,23 +515,67 @@
       border-bottom: 3px solid transparent; border-radius: 6px;
       white-space: nowrap; flex-shrink: 0;
     }
-    .sidebar-item.active { border-left-color: transparent; border-bottom-color: var(--blue-mid); }
+    .sidebar-item.active { border-left-color: transparent; border-bottom-color: var(--blue-mid); background: var(--blue-light); }
+    .sidebar-item.done   { border-left-color: transparent; border-bottom-color: var(--green); }
     .si-count { display: none; }
-    .sidebar-footer { margin-top: 0; margin-left: auto; border-top: none; border-left: 1px solid var(--border); padding: 4px 14px; white-space: nowrap; }
-    .sb-pct-big { font-size: 1.6rem; }
+    .sidebar-footer { margin-top: 0; margin-left: auto; border-top: none; border-left: 1px solid var(--border); padding: 4px 14px; white-space: nowrap; flex-shrink: 0; }
+    .sb-pct-big { font-size: 1.5rem; }
     .sb-pct-lbl { display: none; }
-    .survey-main { height: auto; overflow-y: visible; }
+    .survey-main { height: auto; overflow-y: visible; flex: unset; }
+    .questions-wrap { padding: 18px 20px 12px; }
+    .pillar-banner { padding: 14px 20px; flex-wrap: wrap; gap: 8px; }
+    .pillar-banner h3 { font-size: 14px; }
+    .section-nav { padding: 10px 20px; }
+
+    /* Results */
+    .results-body { padding: 24px 20px; }
     .pillar-grid { grid-template-columns: 1fr; }
-    .questions-wrap { padding: 18px 18px 12px; }
-    .pillar-banner { padding: 14px 18px; }
-    .section-nav { padding: 10px 18px; }
-    .dots-row { padding: 10px 18px 4px; }
+    .overall-score-card { flex-direction: column; gap: 16px; }
+    .overall-score-num { font-size: 3rem; }
+    .overall-score-num span { font-size: 3rem; }
   }
-  @media (max-width: 480px) {
-    .overall-score-card { flex-direction: column; }
-    .maturity-badge { margin-left: 0; }
-    .results-body { padding: 20px 16px; }
-    .nav { padding: 0 18px; }
+
+  /* Mobile: up to 600px */
+  @media (max-width: 600px) {
+    .nav-links a { font-size: 12px; padding: 5px 8px; }
+    .nav-brand-text { font-size: 17px; }
+    .welcome-body { padding: 40px 18px 40px; }
+    .welcome-inner p { font-size: 15px; }
+    .stats-row { gap: 16px; }
+    .stat-num { font-size: 24px; }
+    .stat-lbl { font-size: 11px; }
+    .btn { padding: 12px 22px; font-size: 14px; }
+    .questions-wrap { padding: 14px 14px 10px; }
+    .q-subtitle { font-size: 14px; }
+    .stage-label { font-size: 13px; padding: 10px 12px; gap: 10px; }
+    .stage-tag { font-size: 9px; padding: 2px 6px; }
+    .section-nav { padding: 10px 14px; gap: 8px; }
+    .section-nav .btn { padding: 10px 16px; font-size: 13px; }
+    .pillar-no-pill { font-size: 11px; padding: 4px 10px; }
+    .pillar-wt-pill { font-size: 10px; padding: 3px 8px; }
+    .pillar-banner h3 { font-size: 13px; }
+    .results-body { padding: 16px 14px; }
+    .results-hero { padding: 20px; }
+    .results-hero h2 { font-size: 16px; }
+    .overall-score-card { padding: 20px 18px; }
+    .overall-score-num { font-size: 2.5rem; }
+    .overall-score-num span { font-size: 2.5rem; }
+    .overall-score-info h3 { font-size: 15px; }
+    .pillar-score-card { padding: 16px; }
+    .chart-wrap { padding: 20px 16px; }
+    .grade-key th { font-size: 12px; padding: 8px 10px; }
+    .grade-key td { padding: 8px 10px; font-size: 13px; }
+    .star-cell { font-size: 14px; }
+  }
+
+  /* Very small mobile: up to 380px */
+  @media (max-width: 380px) {
+    .nav-brand-text { font-size: 15px; }
+    .nav-links a { font-size: 11px; padding: 4px 6px; }
+    .welcome-body { padding: 30px 14px 34px; }
+    .stat-num { font-size: 20px; }
+    .q-subtitle { font-size: 13px; }
+    .stage-label { font-size: 12px; padding: 8px 10px; }
   }
 </style>
 </head>
@@ -596,8 +647,6 @@
     <div id="pillar-banner-wrap" style="display:none;"></div>
     <!-- question card injected here -->
     <div class="questions-wrap" id="questions-wrap"></div>
-    <!-- dot indicators -->
-    <div class="dots-row" id="dots-row"></div>
     <!-- warning message -->
     <div class="warn-bar" id="warn-bar">Please select a stage before moving on.</div>
     <!-- prev / next navigation -->
@@ -960,10 +1009,7 @@ function renderQuestion() {
     wrap.style.opacity = '1';
   }, 150);
 
-  // update dots
-  updateDots();
-
-  // update prev/next buttons
+  // update prev/next button visibility and label
   var isFirst = (curPillar === 0 && curMetric === 0);
   var isLast  = (curPillar === PILLARS.length - 1 && curMetric === PILLARS[curPillar].metrics.length - 1);
   var btnP = document.getElementById('btn-prev');
@@ -988,7 +1034,6 @@ function recordAnswer(marks) {
   if (card) card.classList.add('answered');
 
   updateSidebar();
-  updateDots();
 
   // auto-advance after short delay
   setTimeout(function() { nextQ(); }, 400);
@@ -1041,22 +1086,6 @@ function prevQ() {
 
   var sm = document.getElementById('survey-main');
   if (sm) sm.scrollTop = 0;
-}
-
-// ---- UPDATE DOTS ----
-function updateDots() {
-  var dc = document.getElementById('dots-row');
-  if (!dc) return;
-  var pillar = PILLARS[curPillar];
-  var html = '';
-  pillar.metrics.forEach(function(m, i) {
-    var key = curPillar + '_' + i;
-    var cls = 'cdot';
-    if (answers[key] !== undefined) cls += ' cdot-done';
-    if (i === curMetric) cls += ' cdot-current';
-    html += '<span class="' + cls + '"></span>';
-  });
-  dc.innerHTML = html;
 }
 
 // ---- SHOW RESULTS ----
