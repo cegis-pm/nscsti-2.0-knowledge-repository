@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NSCSTI 2.0 Self-Assessment</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- Google Fonts: same as index.html -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
 <style>
   /* ---- CSS VARIABLES: colours from index.html ---- */
   :root {
@@ -19,8 +23,8 @@
     --text-mid:    #4A5D6E;
     --text-light:  #7A8D9E;
     --border:      #D0DDE9;
-    --header-h:    64px;
-    --sidebar-w:   260px;
+    --header-h:    70px;
+    --sidebar-w:   280px;
     --font:        'Source Sans 3', sans-serif;
   }
 
@@ -28,7 +32,7 @@
   html { height: 100%; }
   body {
     min-height: 100%;
-    font-family: var(--font);
+    font-family: 'Source Sans 3', sans-serif;
     color: var(--text-dark);
     background: var(--white);
     display: flex;
@@ -37,8 +41,7 @@
     line-height: 1.65;
   }
 
-  /* ---- GOOGLE FONT ---- */
-  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700;900&display=swap');
+
 
   /* ---- SCREENS ---- */
   .screen { display: none; flex: 1; flex-direction: column; overflow-x: hidden; overflow-y: auto; }
@@ -61,68 +64,64 @@
     display: flex; align-items: center; gap: 12px; cursor: pointer;
   }
   .nav-brand-text {
-    color: white; font-family: var(--font);
+    color: white;
+    font-family: 'Source Sans 3', sans-serif;
     font-size: 22px; font-weight: 700; letter-spacing: 0.3px;
   }
   .nav-links {
     display: flex; align-items: center; gap: 8px; list-style: none;
   }
   .nav-links a {
-    color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    font-size: 14px; font-weight: 600;
     padding: 8px 14px; border-radius: 6px;
-    transition: background 0.2s, color 0.2s; letter-spacing: 0.2px;
+    transition: background 0.2s, color 0.2s;
+    letter-spacing: 0.2px;
     text-decoration: none;
   }
   .nav-links a:hover, .nav-links a.active {
     background: rgba(255,255,255,0.15); color: white; text-decoration: none;
   }
 
-  /* ---- WELCOME SCREEN ---- */
+  /* ---- WELCOME SCREEN: matches index.html hero section ---- */
   #screen-welcome {
     padding-top: var(--header-h);
+    background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-mid) 60%, #3A7DBD 100%);
   }
   .welcome-body {
     flex: 1;
     overflow-y: auto;
-    padding: 50px 40px 60px;
+    padding: 90px 60px 80px;
   }
   .welcome-inner {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
   }
+  .welcome-inner h1 {
+    font-size: clamp(28px, 4vw, 48px);
+    color: white;
+    margin-bottom: 20px;
+    line-height: 1.15;
+  }
+  .welcome-inner p { color: rgba(255,255,255,0.80); font-size: 20px; line-height: 1.7; margin-bottom: 14px; font-weight: 300; max-width: 680px; }
+
+  /* stats row: matches index.html hero-stats */
+  .stats-row { display: flex; gap: 40px; margin: 50px 0 36px; flex-wrap: wrap; }
+  .stat-card { text-align: left; }
+  .stat-num { font-size: 36px; font-weight: 900; color: var(--saffron); line-height: 1; }
+  .stat-lbl { font-size: 12px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+  /* tag pill matching index.html hero-tag */
   .welcome-tag {
     display: inline-block;
-    background: rgba(224,123,57,0.15);
+    background: rgba(224,123,57,0.2);
     border: 1px solid rgba(224,123,57,0.4);
-    color: var(--saffron);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 5px 14px;
-    border-radius: 20px;
-    margin-bottom: 20px;
+    color: #F5C07A;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 20px;
+    margin-bottom: 24px;
   }
-  .welcome-inner h1 {
-    font-size: clamp(24px, 3.5vw, 38px);
-    color: var(--blue-deep);
-    margin-bottom: 16px;
-    line-height: 1.2;
-  }
-  .welcome-inner p { color: var(--text-mid); font-size: 16px; line-height: 1.75; margin-bottom: 14px; }
-
-  /* stats row on welcome screen */
-  .stats-row { display: flex; gap: 14px; margin: 28px 0; flex-wrap: wrap; }
-  .stat-card {
-    flex: 1; min-width: 110px;
-    background: var(--blue-light);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 14px;
-    text-align: center;
-  }
-  .stat-num { font-size: 2rem; font-weight: 900; color: var(--blue-deep); line-height: 1; }
-  .stat-lbl { font-size: 12px; color: var(--text-mid); text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
 
   /* pillar pills on welcome screen */
   .pillar-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
@@ -138,17 +137,25 @@
 
   /* begin button */
   .btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 12px 28px; border-radius: 8px;
-    font-family: var(--font); font-size: 15px; font-weight: 700;
-    cursor: pointer; border: none; transition: opacity 0.15s, transform 0.1s, background 0.2s;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 28px; border-radius: 8px;
+    font-family: 'Source Sans 3', sans-serif; font-size: 15px; font-weight: 700;
+    cursor: pointer; border: none; transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    text-decoration: none;
   }
-  .btn:hover  { opacity: 0.88; transform: translateY(-1px); }
-  .btn:active { transform: scale(0.98); }
-  .btn-primary   { background: var(--saffron); color: var(--white); box-shadow: 0 4px 16px rgba(224,123,57,0.35); }
-  .btn-secondary { background: transparent; color: var(--blue-mid); border: 2px solid var(--blue-mid); }
-  .btn-green     { background: var(--green); color: var(--white); }
-  .btn-outline   { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,0.5); }
+  .btn-primary {
+    background: var(--saffron); color: var(--white);
+    box-shadow: 0 4px 16px rgba(224,123,57,0.4);
+  }
+  .btn-primary:hover {
+    background: #C96A2A; transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(224,123,57,0.5);
+  }
+  .btn-secondary {
+    background: transparent; color: var(--blue-mid);
+    border: 2px solid var(--blue-mid);
+  }
+  .btn-secondary:hover { opacity: 0.85; transform: translateY(-1px); }
 
   /* ---- SURVEY SCREEN ---- */
   #screen-survey {
