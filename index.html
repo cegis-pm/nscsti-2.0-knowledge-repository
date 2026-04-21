@@ -33,6 +33,12 @@
 
     html { scroll-behavior: smooth; scrollbar-gutter: stable; }
 
+    /* Force persistent scrollbar to prevent layout shift on all browsers */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--off-white); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
     body {
       font-family: 'Source Sans 3', sans-serif;
       color: var(--text-dark);

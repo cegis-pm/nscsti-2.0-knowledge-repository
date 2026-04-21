@@ -30,6 +30,13 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { height: 100%; scrollbar-gutter: stable; }
+
+  /* Force persistent scrollbar to prevent layout shift on all browsers */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--off-white); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
   body {
     min-height: 100%;
     font-family: 'Source Sans 3', sans-serif;
