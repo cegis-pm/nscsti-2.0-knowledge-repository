@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NSCSTI 2.0 Self-Assessment</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <!-- Google Fonts: same as index.html -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -121,40 +120,44 @@
   }
   /* ===================== */
 
-  /* ---- WELCOME SCREEN: matches index.html hero section ---- */
   #screen-welcome {
     padding-top: var(--header-h);
-    background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-mid) 60%, #3A7DBD 100%);
+    background: var(--white);
   }
   .welcome-body {
     flex: 1;
     overflow-y: auto;
     padding: 90px 60px 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .welcome-inner {
-    max-width: 900px;
-    margin: 0 auto;
+    max-width: 720px;
+    width: 100%;
+    text-align: center;
   }
   .welcome-inner h1 {
     font-size: clamp(24px, 4vw, 48px);
-    color: white;
+    color: var(--blue-deep);
     margin-bottom: 20px;
     line-height: 1.15;
   }
-  .welcome-inner p { color: rgba(255,255,255,0.80); font-size: 20px; line-height: 1.7; margin-bottom: 14px; font-weight: 300; max-width: 680px; }
+  .welcome-inner p { color: var(--text-mid); font-size: 18px; line-height: 1.7; margin-bottom: 14px; font-weight: 300; text-align: justify; }
+  .stats-row { justify-content: center; }
 
   /* stats row: matches index.html hero-stats */
   .stats-row { display: flex; gap: 40px; margin: 50px 0 36px; flex-wrap: wrap; }
-  .stat-card { text-align: left; }
-  .stat-num { font-size: 36px; font-weight: 900; color: var(--saffron); line-height: 1; }
-  .stat-lbl { font-size: 12px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+  .stat-card { text-align: center; }
+  .stat-num { font-size: 36px; font-weight: 900; color: var(--blue-deep); line-height: 1; }
+  .stat-lbl { font-size: 12px; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
 
   /* tag pill matching index.html hero-tag */
   .welcome-tag {
     display: inline-block;
-    background: rgba(224,123,57,0.2);
-    border: 1px solid rgba(224,123,57,0.4);
-    color: #F5C07A;
+    background: var(--blue-light);
+    border: 1px solid var(--border);
+    color: var(--blue-mid);
     font-size: 11px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
     padding: 5px 14px; border-radius: 20px;
@@ -193,7 +196,7 @@
     background: transparent; color: var(--blue-mid);
     border: 2px solid var(--blue-mid);
   }
-  .btn-secondary:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-secondary:hover { background: var(--blue-light); transform: translateY(-1px); }
 
   /* ---- SURVEY SCREEN ---- */
   #screen-survey {
@@ -479,7 +482,7 @@
     font-size: 1.8rem; font-weight: 900; line-height: 1;
     color: var(--blue-deep);
   }
-  .psc-score-num .psc-denom { font-size: 1rem; font-weight: 400; color: var(--text-light); }
+  .psc-score-num .psc-denom { font-size: 1.8rem; font-weight: 900; color: var(--blue-deep); }
   .psc-name { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 10px; line-height: 1.4; }
   .psc-bar-track { background: var(--border); border-radius: 4px; height: 6px; overflow: hidden; }
   .psc-bar-fill  { height: 100%; border-radius: 4px; transition: width 0.6s 0.3s; }
@@ -1175,57 +1178,7 @@ function showResults() {
     grid.appendChild(card);
   });
 
-  drawRadar(pillarResults);
-}
-
-// ---- DRAW RADAR CHART: single neutral colour, no colour coding ----
-function drawRadar(pillarResults) {
-  var labels = pillarResults.map(function(r) { return 'P' + (PILLARS.indexOf(r.pillar) + 1); });
-  var data   = pillarResults.map(function(r) { return r.pct; });
-
-  var ctx = document.getElementById('radar-chart').getContext('2d');
-  if (window._radarChart) window._radarChart.destroy();
-
-  window._radarChart = new Chart(ctx, {
-    type: 'radar',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Score (%)',
-        data: data,
-        backgroundColor: 'rgba(43,94,150,0.12)',
-        borderColor: '#2B5E96',
-        borderWidth: 2.5,
-        pointBackgroundColor: '#2B5E96',
-        pointRadius: 5,
-        pointHoverRadius: 7
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        r: {
-          min: 0, max: 100,
-          ticks: { stepSize: 20, font: { size: 11 }, color: '#7A8D9E',
-            callback: function(v) { return v + '%'; } },
-          pointLabels: { font: { size: 13, weight: '700' }, color: '#1C2B3A' },
-          grid: { color: 'rgba(0,0,0,0.08)' },
-          angleLines: { color: 'rgba(0,0,0,0.08)' }
-        }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: function(ctx) {
-              var pi = ctx.dataIndex;
-              return PILLARS[pi].pillar_title + ': ' + ctx.raw + '%';
-            }
-          }
-        }
-      }
-    }
-  });
+  // radar chart removed
 }
 
 // ---- RESTART ----
