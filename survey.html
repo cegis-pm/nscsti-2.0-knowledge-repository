@@ -531,22 +531,27 @@
   .psc-bar-fill  { height: 100%; border-radius: 4px; background: var(--blue-mid); transition: width 0.6s 0.3s; }
 
   /* ---- GRADING KEY TABLE ---- */
+  /* wrapper centres the table horizontally inside the card */
+  .grade-key-wrap { display: flex; justify-content: center; }
   .grade-key {
-    width: 100%; border-collapse: collapse;
+    border-collapse: collapse;
     margin-top: 8px; font-size: 14px;
   }
   .grade-key th {
-    background: var(--blue-deep); color: white;
     padding: 10px 14px; text-align: left;
     font-size: 13px; font-weight: 700; letter-spacing: 0.3px;
+    color: var(--text-light);
   }
-  .grade-key td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .grade-key td { padding: 10px 14px; }
   .grade-key tr:last-child td { border-bottom: none; }
-  .grade-key tr:nth-child(even) td { background: var(--off-white); }
+  /* alternating row colours removed */
   /* star rating cell */
   .star-cell { letter-spacing: 2px; font-size: 16px; }
   .star-on  { color: #F5A623; }
   .star-off { color: #C8C8C8; }
+  /* stars shown next to overall score and below pillar bars */
+  .score-stars { font-size: 20px; letter-spacing: 3px; margin-top: 4px; }
+  .psc-stars   { font-size: 14px; letter-spacing: 2px; margin-top: 6px; }
 
   /* ---- RESPONSIVE ---- */
 
@@ -754,6 +759,7 @@
       <!-- grading key -->
       <div class="chart-wrap" style="margin-bottom:24px;">
         <h3>Grading Key</h3>
+        <div class="grade-key-wrap">
         <table class="grade-key">
           <thead>
             <tr>
@@ -795,15 +801,11 @@
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
 
-      <!-- restart button -->
-      <div style="text-align:center;margin-top:10px;">
-        <button class="btn btn-secondary" onclick="restartSurvey()">Retake Assessment</button>
-      </div>
-
-      <!-- disclaimer repeated on results screen below the grading key -->
-      <div class="disclaimer-box" style="margin-top:28px;margin-bottom:0;">
+      <!-- disclaimer on results screen below the grading key -->
+      <div class="disclaimer-box" style="margin-top:0;margin-bottom:24px;">
         <div class="disclaimer-icon">
           <!-- Warning icon -->
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -811,6 +813,11 @@
         <p class="disclaimer-text">
           <strong>Disclaimer:</strong> This self-assessment is for informational purposes only. The scores shown here are indicative and do not represent your official self-assessment, which is conducted as part of the accreditation process.
         </p>
+      </div>
+
+      <!-- restart button now sits below the disclaimer -->
+      <div style="text-align:center;margin-top:0;">
+        <button class="btn btn-secondary" onclick="restartSurvey()">Retake Self-Assessment</button>
       </div>
 
     </div>
@@ -1175,6 +1182,28 @@ function prevQ() {
   if (sm) sm.scrollTop = 0;
 }
 
+// ---- STAR RATING HELPER ----
+// returns an HTML string of 5 stars based on the percentage score
+function getStars(pct) {
+  var filled = 0;
+  // ranges from the grading key image
+  if (pct >= 89)      filled = 5;
+  else if (pct >= 77) filled = 4;
+  else if (pct >= 65) filled = 3;
+  else if (pct >= 53) filled = 2;
+  else if (pct >= 40) filled = 1;
+  else                filled = 0;
+
+  var html = '';
+  for (var i = 0; i < 5; i++) {
+    // filled stars are gold, empty stars are grey
+    html += i < filled
+      ? '<span class="star-on">★</span>'
+      : '<span class="star-off">★</span>';
+  }
+  return html;
+}
+
 // ---- SHOW RESULTS ----
 function showResults() {
   showScreen('screen-results');
@@ -1199,17 +1228,18 @@ function showResults() {
   }, 0);
   overallPct = Math.round(overallPct);
 
-  // overall card: number and % same size, label "Overall Score", no maturity badge
+  // overall card: number, %, label, and star rating
   var overallCard = document.getElementById('overall-card');
   overallCard.innerHTML =
     '<div>' +
       '<div class="overall-score-num">' + overallPct + '<span>%</span></div>' +
+      '<div class="score-stars">' + getStars(overallPct) + '</div>' +
     '</div>' +
     '<div class="overall-score-info">' +
       '<h3>Overall Score</h3>' +
     '</div>';
 
-  // pillar grid: percentage only, no fraction, no metric count, no colour coding
+  // pillar grid: percentage, bar, and stars below the bar
   var grid = document.getElementById('pillar-grid');
   grid.innerHTML = '';
   pillarResults.forEach(function(r) {
@@ -1224,7 +1254,8 @@ function showResults() {
         '<div class="psc-score-num">' + r.pct + '<span class="psc-denom">%</span></div>' +
       '</div>' +
       '<div class="psc-name">' + r.pillar.pillar_title + '</div>' +
-      '<div class="psc-bar-track"><div class="psc-bar-fill" style="width:' + r.pct + '%;"></div></div>';
+      '<div class="psc-bar-track"><div class="psc-bar-fill" style="width:' + r.pct + '%;"></div></div>' +
+      '<div class="psc-stars">' + getStars(r.pct) + '</div>';
     grid.appendChild(card);
   });
 
