@@ -168,7 +168,7 @@
     }
 
     .hero-sub {
-      font-size: 20px;
+      font-size: 17px;
       color: rgba(255,255,255,0.80);
       max-width: 680px;
       font-weight: 300;
@@ -225,6 +225,122 @@
       margin-top: 4px;
     }
 
+    /* ---- Eight Pillars + Self-Assessment Two Column Layout ---- */
+    .pillars-two-col {
+      display: grid;
+      /* left column takes remaining space, right column is fixed width */
+      grid-template-columns: 1fr 360px;
+      gap: 48px;
+      align-items: start;
+    }
+
+    /* left column holds the heading, sub, and grid */
+    .pillars-col {}
+
+    /* right column: self-assessment panel */
+    .sa-col {
+      position: sticky;
+      top: calc(var(--header-h) + 24px);
+    }
+
+    /* the card itself */
+    .sa-card {
+      background: var(--blue-deep);
+      border-radius: 14px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* small label above the heading */
+    .sa-tag {
+      display: inline-block;
+      background: rgba(224,123,57,0.2);
+      border: 1px solid rgba(224,123,57,0.4);
+      color: #F5C07A;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      width: fit-content;
+    }
+
+    .sa-heading {
+      font-size: 22px;
+      color: white;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+
+    .sa-text {
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.7;
+      margin-bottom: 12px;
+      font-weight: 300;
+    }
+
+    /* feature checklist */
+    .sa-features {
+      list-style: none;
+      margin: 8px 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sa-features li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* green tick icon inside each feature item */
+    .sa-features li svg {
+      color: #6FCF97;
+      flex-shrink: 0;
+    }
+
+    /* small disclaimer text at the bottom */
+    .sa-disclaimer {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.6;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    /* the call-to-action button */
+    .sa-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--saffron);
+      color: white;
+      padding: 13px 22px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(224,123,57,0.4);
+      width: fit-content;
+    }
+
+    .sa-btn:hover {
+      background: #C96A2A;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(224,123,57,0.5);
+      text-decoration: none;
+    }
+
     /* ---- Eight Pillars Grid Section ---- */
     .pillars-section {
       max-width: 1200px;
@@ -234,7 +350,7 @@
 
     .section-title {
       text-align: center;
-      font-size: 36px;
+      font-size: 24px;
       color: var(--blue-deep);
       margin-bottom: 10px;
     }
@@ -242,23 +358,23 @@
     .section-sub {
       text-align: center;
       color: var(--text-mid);
-      font-size: 18px;
+      font-size: 16px;
       margin-bottom: 50px;
     }
 
-    /* 4-column grid for the 8 pillar cards */
+    /* 2-column grid for the 8 pillar cards (left column of the two-col layout) */
     .pillars-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 20px;
     }
 
     /* Individual pillar card */
     .pillar-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 28px 22px; cursor: pointer; transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s, background 0.22s; position: relative; overflow: hidden; display: flex; flex-direction: column; }
     .pillar-card:hover { background: #FFF5EE; transform: translateY(-5px); box-shadow: 0 12px 32px rgba(224,123,57,0.15); border-color: var(--saffron); }
-    .pillar-card h3 { font-family: 'Source Sans 3', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-dark); margin-bottom: 0; line-height: 1.4; flex: 1; }
+    .pillar-card h3 { font-family: 'Source Sans 3', sans-serif; font-size: 16px; font-weight: 700; color: var(--text-dark); margin-bottom: 0; line-height: 1.4; flex: 1; }
     .pillar-card-meta { margin-top: 16px; display: flex; align-items: center; gap: 12px; }
-    .browse-link { font-size: 16px; font-weight: 700; color: var(--blue-mid); display: flex; align-items: center; gap: 5px; margin-top: 10px; opacity: 0; transform: translateY(4px); transition: opacity 0.2s, transform 0.2s; }
+    .browse-link { font-size: 14px; font-weight: 700; color: var(--blue-mid); display: flex; align-items: center; gap: 5px; margin-top: 10px; opacity: 0; transform: translateY(4px); transition: opacity 0.2s, transform 0.2s; }
     .pillar-card:hover .browse-link { opacity: 1; transform: translateY(0); }
 
     /* ---- About Section on Homepage ---- */
@@ -322,11 +438,11 @@
     }
 
     .sidebar-title {
-      font-size: 18px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: var(--text-dark);
+      color: var(--text-light);
       padding: 0 20px 14px;
       border-bottom: 1px solid var(--border);
       margin-bottom: 8px;
@@ -365,7 +481,7 @@
     }
 
     .sidebar-label {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--text-dark);
       line-height: 1.4;
@@ -390,17 +506,17 @@
       border-bottom: 2px solid var(--border);
     }
 
-    .pillar-badge { display: inline-block; background: var(--blue-light); color: var(--blue-mid); font-size: 15px; font-weight: 700; letter-spacing: 0.5px; padding: 6px 14px; border-radius: 20px; }
+    .pillar-badge { display: inline-block; background: var(--blue-light); color: var(--blue-mid); font-size: 11px; font-weight: 700; letter-spacing: 0.5px; padding: 5px 12px; border-radius: 20px; }
 
     .pillar-header h2 {
-      font-size: 32px;
+      font-size: 24px;
       color: var(--blue-deep);
       margin-bottom: 10px;
     }
 
     .pillar-header p {
       color: var(--text-mid);
-      font-size: 17px;
+      font-size: 15px;
     }
 
     /* ---- MATURITY LEVELS STEPPER ----
@@ -461,9 +577,9 @@
       padding: 12px 16px;
       background: var(--blue-light);
       border-radius: 8px;
-      font-size: 13px;
+      font-size: 14px;
       color: var(--text-dark);
-      display: none;             /* Hidden until a stage is clicked */
+      display: none;
       border-left: 3px solid var(--blue-mid);
     }
 
@@ -506,7 +622,7 @@
       background: var(--blue-light);
       border-radius: 6px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--blue-mid);
       flex-shrink: 0;
@@ -514,7 +630,7 @@
 
     .metric-head h4 {
       font-family: 'Source Sans 3', sans-serif;
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 600;
       color: var(--text-dark);
       line-height: 1.4;
@@ -543,7 +659,7 @@
 
     /* Section heading inside the accordion body */
     .docs-title {
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 1.5px;
       text-transform: uppercase;
@@ -577,7 +693,7 @@
     }
 
     /* File type icon circle */
-    .doc-text { font-size: 16px; color: var(--text-dark); line-height: 1.5; }
+    .doc-text { font-size: 14px; color: var(--text-dark); line-height: 1.5; }
 
     
     footer {
@@ -648,6 +764,10 @@
 
     /* Tablet: 768px - 1024px */
     @media (max-width: 1024px) {
+      /* stack the two columns vertically on tablet */
+      .pillars-two-col { grid-template-columns: 1fr; gap: 32px; }
+      /* unstick the sa card when stacked */
+      .sa-col { position: static; }
       .pillars-grid { grid-template-columns: repeat(2, 1fr); }
       .hero { padding: 70px 40px 60px; }
       .pillars-section { padding: 50px 30px; }
@@ -668,6 +788,8 @@
       .hero-stats { gap: 24px; flex-wrap: wrap; }
 
       /* Pillars grid */
+      .pillars-two-col { grid-template-columns: 1fr; gap: 24px; }
+      .sa-col { position: static; }
       .pillars-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
       .pillars-section { padding: 40px 20px; }
       .section-title { font-size: 26px; }
@@ -727,6 +849,7 @@
       .pillars-section { padding: 30px 16px; }
       .section-title { font-size: 22px; }
       .pillar-card { padding: 20px 18px; }
+      .sa-card { padding: 24px 20px; }
 
       /* Repo */
       .repo-main { padding: 16px; }
@@ -779,7 +902,7 @@
         <p class="hero-sub">
           A shared resource repository introducing standards for best practices in the civil service capacity building ecosystem. This repository serves all Training Institutions across India, providing standardised evidence templates, SOPs, and best-practice documents to support institutional maturity assessments under NSCSTI 2.0.
         </p>
-        <!-- Wrapper to place both buttons side by side -->
+        <!-- Wrapper to place the CTA button -->
         <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;">
 
           <!-- CTA button opens the official NSCSTI website -->
@@ -788,23 +911,62 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
 
-          <!-- Self-assessment button opens the new local survey page -->
-          <a href="survey.html" class="btn-secondary">
-            Take Self-Assessment
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-          </a>
-
         </div>
       </div>
     </section>
 
-    <!-- EIGHT PILLARS GRID -->
+    <!-- TWO COLUMN SECTION: Eight Pillars + Self-Assessment Tool -->
     <section class="pillars-section">
-      <h2 class="section-title">Eight Pillars of Excellence</h2>
-      <p class="section-sub">Click on any pillar to explore its metrics and resource templates</p>
+      <div class="pillars-two-col">
 
-      <div class="pillars-grid" id="pillars-grid">
-        <!-- Cards are generated by JavaScript below -->
+        <!-- LEFT COLUMN: Eight Pillars of Excellence -->
+        <div class="pillars-col">
+          <h2 class="section-title" style="text-align:left;">Eight Pillars of Excellence</h2>
+          <p class="section-sub" style="text-align:left;">Click on any pillar to explore its metrics and resource templates</p>
+          <div class="pillars-grid" id="pillars-grid">
+            <!-- Cards are generated by JavaScript below -->
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Self-Assessment Tool -->
+        <div class="sa-col">
+          <div class="sa-card">
+            <!-- Small label tag -->
+            <div class="sa-tag">Self-Assessment Tool</div>
+            <h2 class="sa-heading">Gauge Your Institution's Readiness</h2>
+            <p class="sa-text">
+              Use the built-in self-assessment tool to evaluate your institution's current maturity level across all eight pillars and 43 metrics of the NSCSTI 2.0 framework.
+            </p>
+            <p class="sa-text">
+              The tool generates an indicative pillar-wise and overall score, helping you understand where your institution stands before undertaking the formal accreditation process.
+            </p>
+            <!-- Feature list -->
+            <ul class="sa-features">
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"/></svg>
+                Covers all 8 pillars and 43 metrics
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"/></svg>
+                Pillar-wise and overall score
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"/></svg>
+                Indicative star rating
+              </li>
+            </ul>
+            <!-- Disclaimer note -->
+            <p class="sa-disclaimer">
+              Scores are indicative only and do not constitute an official self-assessment under the accreditation process.
+            </p>
+            <!-- CTA button -->
+            <a href="survey.html" class="sa-btn">
+              Take Self-Assessment
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            </a>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -2594,7 +2756,7 @@
           <div class="pillar-header">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
               <div class="pillar-badge">Pillar ${pillarIdx + 1} of 8</div>
-              <div style="display:inline-block;background:#FFF3E0;color:#C96A2A;font-size:15px;font-weight:700;padding:6px 16px;border-radius:20px;">Weightage: ${weight}%</div>
+              <div style="display:inline-block;background:#FFF3E0;color:#C96A2A;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;">Weightage: ${weight}%</div>
             </div>
             <h2>${pillarName}</h2>
             <p>${PILLAR_DESCRIPTIONS[pillarName]}</p>
