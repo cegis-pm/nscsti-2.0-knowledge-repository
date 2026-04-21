@@ -47,7 +47,7 @@
   .screen { display: none; flex: 1; flex-direction: column; overflow-x: hidden; overflow-y: auto; }
   .screen.active { display: flex; }
 
-  /* ---- TOP NAV: matches index.html exactly ---- */
+  /* ======== NAV ======== */
   .nav {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -61,34 +61,57 @@
     box-shadow: 0 2px 12px rgba(0,0,0,0.25);
   }
   .nav-brand {
-    display: flex; align-items: center; gap: 12px; cursor: pointer;
-  }
-  .nav-brand-text {
     color: white;
     font-family: 'Source Sans 3', sans-serif;
-    font-size: 22px; font-weight: 700; letter-spacing: 0.3px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    text-decoration: none;
+    user-select: none;
   }
   .nav-links {
-    display: flex; align-items: center; gap: 8px; list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
+  .nav-links li { display: flex; }
   .nav-links a {
-    color: rgba(255,255,255,0.85);
-    font-size: 14px; font-weight: 600;
-    padding: 8px 14px; border-radius: 6px;
-    transition: background 0.2s, color 0.2s;
+    display: inline-block;
+    color: rgba(255,255,255,0.80);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
     letter-spacing: 0.2px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    line-height: 1;
+    transition: background 0.18s, color 0.18s;
+    white-space: nowrap;
+  }
+  .nav-links a:hover {
+    background: rgba(255,255,255,0.12);
+    color: white;
     text-decoration: none;
   }
-  .nav-links a:hover, .nav-links a.active {
-    background: rgba(255,255,255,0.15); color: white; text-decoration: none;
-  }
-  /* Self-Assessment link: always highlighted, no shift on hover */
-  .nav-links a.nav-highlight,
-  .nav-links a.nav-highlight:hover {
-    background: rgba(224,123,57,0.25);
+  .nav-links a.active {
+    background: rgba(255,255,255,0.15);
     color: white;
-    transform: none;
   }
+  /* Self-Assessment pill — saffron tint, stable on hover */
+  .nav-links a.nav-cta {
+    background: rgba(224,123,57,0.28);
+    color: white;
+  }
+  .nav-links a.nav-cta:hover {
+    background: rgba(224,123,57,0.45);
+    color: white;
+  }
+  /* ===================== */
 
   /* ---- WELCOME SCREEN: matches index.html hero section ---- */
   #screen-welcome {
@@ -499,7 +522,7 @@
   @media (max-width: 768px) {
     /* Nav */
     .nav { padding: 0 20px; }
-    .nav-brand-text { font-size: 18px; }
+    .nav-brand { font-size: 18px; }
     .nav-links a { padding: 6px 10px; font-size: 13px; }
 
     /* Welcome */
@@ -545,7 +568,7 @@
   /* Mobile: up to 600px */
   @media (max-width: 600px) {
     .nav-links a { font-size: 12px; padding: 5px 8px; }
-    .nav-brand-text { font-size: 17px; }
+    .nav-brand { font-size: 17px; }
     .welcome-body { padding: 40px 18px 40px; }
     .welcome-inner p { font-size: 15px; }
     .stats-row { gap: 16px; }
@@ -577,7 +600,7 @@
 
   /* Very small mobile: up to 380px */
   @media (max-width: 380px) {
-    .nav-brand-text { font-size: 15px; }
+    .nav-brand { font-size: 15px; }
     .nav-links a { font-size: 11px; padding: 4px 6px; }
     .welcome-body { padding: 30px 14px 34px; }
     .stat-num { font-size: 20px; }
@@ -588,16 +611,12 @@
 </head>
 <body>
 
-<!-- FIXED TOP NAV: matches index.html -->
 <nav class="nav">
-  <div class="nav-brand" onclick="window.location.href='index.html'">
-    <div class="nav-brand-text">NSCSTI 2.0</div>
-  </div>
-
+  <span class="nav-brand" onclick="window.location.href='index.html'">NSCSTI 2.0</span>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="index.html#repo">Repository</a></li>
-    <li><a href="survey.html" class="nav-highlight">Self-Assessment</a></li>
+    <li><a href="survey.html" class="nav-cta">Self-Assessment</a></li>
   </ul>
 </nav>
 

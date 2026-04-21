@@ -51,8 +51,9 @@
     a:hover { text-decoration: underline; }
 
     
+    /* ======== NAV ======== */
     .nav {
-      position: fixed;         /* Stays at the top while scrolling */
+      position: fixed;
       top: 0; left: 0; right: 0;
       height: var(--header-h);
       background: var(--blue-deep);
@@ -60,60 +61,61 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 40px;
-      z-index: 1000;           /* Sits above all other content */
+      z-index: 1000;
       box-shadow: 0 2px 12px rgba(0,0,0,0.25);
     }
-
-    /* The NSCSTI logo/wordmark in the nav */
     .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-    }
-
-    .nav-brand-text {
       color: white;
       font-family: 'Source Sans 3', sans-serif;
       font-size: 22px;
       font-weight: 700;
       letter-spacing: 0.3px;
+      cursor: pointer;
+      text-decoration: none;
+      user-select: none;
     }
-
-    .nav-brand-text span { display: none; }
-
-    /* Navigation links in the top bar */
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 4px;
       list-style: none;
+      margin: 0;
+      padding: 0;
     }
-
+    .nav-links li { display: flex; }
     .nav-links a {
-      color: rgba(255,255,255,0.85);
+      display: inline-block;
+      color: rgba(255,255,255,0.80);
+      font-family: 'Source Sans 3', sans-serif;
       font-size: 14px;
       font-weight: 600;
+      letter-spacing: 0.2px;
       padding: 8px 14px;
       border-radius: 6px;
-      transition: background 0.2s, color 0.2s;
-      letter-spacing: 0.2px;
+      text-decoration: none;
+      line-height: 1;
+      transition: background 0.18s, color 0.18s;
+      white-space: nowrap;
+    }
+    .nav-links a:hover {
+      background: rgba(255,255,255,0.12);
+      color: white;
       text-decoration: none;
     }
-
-    .nav-links a:hover, .nav-links a.active {
+    .nav-links a.active {
       background: rgba(255,255,255,0.15);
       color: white;
-      text-decoration: none;
     }
-
-    /* Self-Assessment link: always highlighted, no shift on hover */
-    .nav-links a.nav-highlight,
-    .nav-links a.nav-highlight:hover {
-      background: rgba(224,123,57,0.25);
+    /* Self-Assessment pill — saffron tint, stable on hover */
+    .nav-links a.nav-cta {
+      background: rgba(224,123,57,0.28);
       color: white;
-      transform: none;
     }
+    .nav-links a.nav-cta:hover {
+      background: rgba(224,123,57,0.45);
+      color: white;
+    }
+    /* ===================== */
 
     
     .page { display: none; padding-top: var(--header-h); }
@@ -649,7 +651,7 @@
     @media (max-width: 768px) {
       /* Nav: shrink brand, hide some links */
       .nav { padding: 0 20px; }
-      .nav-brand-text { font-size: 18px; }
+      .nav-brand { font-size: 18px; }
       .nav-links a { padding: 6px 10px; font-size: 13px; }
 
       /* Hero */
@@ -736,7 +738,7 @@
 
     /* Very small mobile: up to 380px */
     @media (max-width: 380px) {
-      .nav-brand-text { font-size: 16px; }
+      .nav-brand { font-size: 16px; }
       .nav-links a { font-size: 11px; padding: 5px 6px; }
       .hero { padding: 40px 14px 34px; }
       .pillars-section { padding: 24px 12px; }
@@ -748,14 +750,11 @@
 
   
   <nav class="nav">
-    <div class="nav-brand" onclick="showPage('home')">
-      <div class="nav-brand-text">NSCSTI 2.0</div>
-    </div>
-
+    <span class="nav-brand" onclick="showPage('home')">NSCSTI 2.0</span>
     <ul class="nav-links">
       <li><a href="#" onclick="showPage('home'); return false;" id="link-home" class="active">Home</a></li>
       <li><a href="#" onclick="showPage('repo'); return false;" id="link-repo">Repository</a></li>
-      <li><a href="survey.html" class="nav-highlight">Self-Assessment</a></li>
+      <li><a href="survey.html" class="nav-cta">Self-Assessment</a></li>
     </ul>
   </nav>
 
@@ -771,7 +770,7 @@
       <div class="hero-inner">
         <h1>National Standards for Civil<br>Service Training Institutions</h1>
         <p class="hero-sub">
-          A shared resource repository introducing standards for best practices in the civil service capacity building ecosystem. This repository serves all Civil Service Training Institutions across India, providing standardised evidence templates, SOPs, and best-practice documents to support institutional maturity assessments under NSCSTI 2.0.
+          A shared resource repository introducing standards for best practices in the civil service capacity building ecosystem. This repository serves all Training Institutions across India, providing standardised evidence templates, SOPs, and best-practice documents to support institutional maturity assessments under NSCSTI 2.0.
         </p>
         <!-- Wrapper to place both buttons side by side -->
         <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;">
