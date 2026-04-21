@@ -107,6 +107,14 @@
       text-decoration: none;
     }
 
+    /* Self-Assessment link: always highlighted, no shift on hover */
+    .nav-links a.nav-highlight,
+    .nav-links a.nav-highlight:hover {
+      background: rgba(224,123,57,0.25);
+      color: white;
+      transform: none;
+    }
+
     
     .page { display: none; padding-top: var(--header-h); }
     .page.active { display: block; }
@@ -747,7 +755,7 @@
     <ul class="nav-links">
       <li><a href="#" onclick="showPage('home'); return false;" id="link-home" class="active">Home</a></li>
       <li><a href="#" onclick="showPage('repo'); return false;" id="link-repo">Repository</a></li>
-      <li><a href="survey.html" style="background:rgba(224,123,57,0.25);color:white;">Self-Assessment</a></li>
+      <li><a href="survey.html" class="nav-highlight">Self-Assessment</a></li>
     </ul>
   </nav>
 
